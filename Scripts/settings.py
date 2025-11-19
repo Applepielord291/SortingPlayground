@@ -1,19 +1,22 @@
+#from OpenGL.GL import *
+#from OpenGL.GLU import *
 import pygame
 import asyncio
+import glob
 from pygame.locals import *
 
 # Other Scripts
-import settings as SETTINGS
 import Scripts.constants as CONSTANTS
 
 # Window States
 currentState = 0
 
-async def main():
+
+async def Start():
     # -----------------------START----------------------------------
     currentState = 0
     currentFrame = 0
-    endFrame = len(CONSTANTS.titleScreenImgList)
+    endFrame = len(CONSTANTS.transitionImgList1)
 
     pygame.init()
     pygame.display.set_caption('Merge Sort Simulation')
@@ -30,13 +33,13 @@ async def main():
                     quit()
             #----------------------------INPUTS-----------------------------------------
             keystate = pygame.key.get_pressed()
-            if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
-                currentState = CONSTANTS.SETTINGS_SCREEN
-                SETTINGS.Start()
-                break
+            # if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
+            #     currentState = CONSTANTS.SETTINGS_SCREEN
+            #     print(currentState)
+            #     break
             
             # -----------------------RENDER SPRITES----------------------------------
-            titleScreenImg = pygame.image.load(CONSTANTS.titleScreenImgList[currentFrame]) # retrieve the image from the animation sheet
+            titleScreenImg = pygame.image.load(CONSTANTS.transitionImgList1[currentFrame]) # retrieve the image from the animation sheet
             screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
             pygame.display.flip()
@@ -44,10 +47,6 @@ async def main():
             await asyncio.sleep(0)
             currentFrame += 1
         currentFrame = 0
-        
-if __name__ == "__main__":
-    currentState = CONSTANTS.TITLE_SCREEN
-    asyncio.run(main())
 
 
 
