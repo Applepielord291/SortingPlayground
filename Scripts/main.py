@@ -4,10 +4,11 @@ from pygame.locals import *
 
 # Other Scripts
 import settings as SETTINGS
-import Scripts.constants as CONSTANTS
+import constants as CONSTANTS
 
 # Window States
 currentState = 0
+screen = None
 
 async def main():
     # -----------------------START----------------------------------
@@ -32,7 +33,7 @@ async def main():
             keystate = pygame.key.get_pressed()
             if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
                 currentState = CONSTANTS.SETTINGS_SCREEN
-                SETTINGS.Start()
+                await SETTINGS.Start(screen, display)
                 break
             
             # -----------------------RENDER SPRITES----------------------------------

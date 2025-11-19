@@ -6,22 +6,41 @@ import glob
 from pygame.locals import *
 
 # Other Scripts
-import Scripts.constants as CONSTANTS
+import constants as CONSTANTS
 
 # Window States
 currentState = 0
 
 
-async def Start():
+async def Start(screen, display):
     # -----------------------START----------------------------------
     currentState = 0
     currentFrame = 0
     endFrame = len(CONSTANTS.transitionImgList1)
+    
+    while currentFrame < endFrame:
+            # -------------------------------UPDATE LOOP-----------------------------------
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+            #----------------------------INPUTS-----------------------------------------
+            keystate = pygame.key.get_pressed()
+            # if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
+            #     currentState = CONSTANTS.SETTINGS_SCREEN
+            #     print(currentState)
+            #     break
+            
+            # -----------------------RENDER SPRITES----------------------------------
+            titleScreenImg = pygame.image.load(CONSTANTS.transitionImgList1[currentFrame]) # retrieve the image from the animation sheet
+            screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
-    pygame.init()
-    pygame.display.set_caption('Merge Sort Simulation')
-    display = (1200, 800)
-    screen = pygame.display.set_mode(display)
+            pygame.display.flip()
+            pygame.time.wait(35) # Frame delay
+            await asyncio.sleep(0)
+            currentFrame += 1
+            
+    currentFrame = 0
 
     while currentState == CONSTANTS.TITLE_SCREEN:
         # --------------------------------Title screen keyframes here----------------------------------------------------------
