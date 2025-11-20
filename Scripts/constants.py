@@ -16,6 +16,9 @@ buildTitle = 'TitleScreen/*.bmp'
 debugTrans1 = 'Scripts/Transition1/*.bmp'
 buildTrans1 = 'Transition1/*.bmp'
 
+debugSettings = 'Scripts/SettingsScreen/*.bmp'
+buildSettings = 'SettingsScreen/*.bmp'
+
 #--------------------------Images-----------------------------
 titleScreenImgList = []
 for image in glob.glob(debugTitle):
@@ -26,3 +29,8 @@ transitionImgList1 = []
 for image in glob.glob(debugTrans1):
     transitionImgList1.append(image)
 transitionImgList1.sort()
+
+settingsImgList = []
+for image in glob.glob(debugSettings):
+    settingsImgList.append(image)
+settingsImgList.sort()

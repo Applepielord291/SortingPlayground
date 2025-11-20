@@ -12,9 +12,9 @@ import constants as CONSTANTS
 currentState = 0
 
 
-async def Start(screen, display):
+async def Start(screen, display, newState):
     # -----------------------START----------------------------------
-    currentState = 0
+    currentState = newState
     currentFrame = 0
     endFrame = len(CONSTANTS.transitionImgList1)
     
@@ -36,13 +36,14 @@ async def Start(screen, display):
             screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
             pygame.display.flip()
-            pygame.time.wait(35) # Frame delay
+            pygame.time.wait(50) # Frame delay
             await asyncio.sleep(0)
             currentFrame += 1
             
     currentFrame = 0
+    endFrame = len(CONSTANTS.settingsImgList)
 
-    while currentState == CONSTANTS.TITLE_SCREEN:
+    while currentState == CONSTANTS.SETTINGS_SCREEN:
         # --------------------------------Title screen keyframes here----------------------------------------------------------
         while currentFrame < endFrame:
             # -------------------------------UPDATE LOOP-----------------------------------
@@ -58,7 +59,7 @@ async def Start(screen, display):
             #     break
             
             # -----------------------RENDER SPRITES----------------------------------
-            titleScreenImg = pygame.image.load(CONSTANTS.transitionImgList1[currentFrame]) # retrieve the image from the animation sheet
+            titleScreenImg = pygame.image.load(CONSTANTS.settingsImgList[currentFrame]) # retrieve the image from the animation sheet
             screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
             pygame.display.flip()

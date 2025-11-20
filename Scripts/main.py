@@ -33,7 +33,7 @@ async def main():
             keystate = pygame.key.get_pressed()
             if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
                 currentState = CONSTANTS.SETTINGS_SCREEN
-                await SETTINGS.Start(screen, display)
+                await SETTINGS.Start(screen, display, CONSTANTS.SETTINGS_SCREEN)
                 break
             
             # -----------------------RENDER SPRITES----------------------------------
