@@ -1,5 +1,9 @@
 import glob
 
+# Nigel Garcia
+# constants.py
+# Many variables that needs to be accessed globally are stored here.
+
 # Window States
 currentState = 0
 

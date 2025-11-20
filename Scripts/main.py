@@ -2,52 +2,53 @@ import pygame
 import asyncio
 from pygame.locals import *
 
+# Nigel Garcia
+# main.py
+# Main script, run this to run the program.
+# This is the title screen, which can transition into the Simulation screen.
+
 # Other Scripts
-import settings as SETTINGS
-import constants as CONSTANTS
+import simulation as SIM
+import constants as CONST
 
-# Window States
-currentState = 0
-screen = None
-
-async def main():
-    # -----------------------START----------------------------------
-    currentState = 0
+async def Update(screen):
+    # -------------------------------UPDATE LOOP-----------------------------------
     currentFrame = 0
-    endFrame = len(CONSTANTS.titleScreenImgList)
+    endFrame = len(CONST.titleScreenImgList)
 
-    pygame.init()
-    pygame.display.set_caption('Merge Sort Simulation')
-    display = (1200, 800)
-    screen = pygame.display.set_mode(display)
-
-    while currentState == CONSTANTS.TITLE_SCREEN:
-        # --------------------------------Title screen keyframes here----------------------------------------------------------
+    while CONST.currentState == CONST.TITLE_SCREEN:
         while currentFrame < endFrame:
-            # -------------------------------UPDATE LOOP-----------------------------------
+            #----------------------------INPUTS-----------------------------------------
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-            #----------------------------INPUTS-----------------------------------------
             keystate = pygame.key.get_pressed()
             if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
-                currentState = CONSTANTS.SETTINGS_SCREEN
-                await SETTINGS.Start(screen, display, CONSTANTS.SETTINGS_SCREEN)
+                CONST.currentState = CONST.SETTINGS_SCREEN
+                await SIM.Start(screen)
                 break
-            
             # -----------------------RENDER SPRITES----------------------------------
-            titleScreenImg = pygame.image.load(CONSTANTS.titleScreenImgList[currentFrame]) # retrieve the image from the animation sheet
+            titleScreenImg = pygame.image.load(CONST.titleScreenImgList[currentFrame]) # retrieve the image from the animation sheet
             screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
             pygame.display.flip()
             pygame.time.wait(50) # Frame delay
             await asyncio.sleep(0)
             currentFrame += 1
-        currentFrame = 0
-        
+        currentFrame = 0 # Reset current frame to loop animation
+
+async def main():
+    # -----------------------START----------------------------------
+    pygame.init()
+    pygame.display.set_caption('Merge Sort Simulation')
+    display = (1200, 800)
+    screen = pygame.display.set_mode(display)
+
+    await Update(screen)
+
 if __name__ == "__main__":
-    currentState = CONSTANTS.TITLE_SCREEN
+    CONST.currentState = CONST.TITLE_SCREEN
     asyncio.run(main())
 
 
