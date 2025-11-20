@@ -33,7 +33,7 @@ async def Update(screen):
             screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
             pygame.display.flip()
-            pygame.time.wait(50) # Frame delay
+            pygame.time.wait(30) # Frame delay
             await asyncio.sleep(0)
             currentFrame += 1
         currentFrame = 0 # Reset current frame to loop animation

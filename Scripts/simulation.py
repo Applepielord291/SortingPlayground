@@ -44,18 +44,36 @@ async def Start(screen):
 
     # -------------------------------UPDATE LOOP-----------------------------------
     while currentFrame < endFrame:
-            #----------------------------INPUTS-----------------------------------------
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-            # -----------------------RENDER SPRITES----------------------------------
-            titleScreenImg = pygame.image.load(CONST.transitionImgList1[currentFrame]) # retrieve the image from the animation sheet
-            screen.blit(titleScreenImg, (0,0))
+        #----------------------------INPUTS-----------------------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        # -----------------------RENDER SPRITES----------------------------------
+        titleScreenImg = pygame.image.load(CONST.transitionImgList1[currentFrame]) # retrieve the image from the animation sheet
+        screen.blit(titleScreenImg, (0,0))
 
-            pygame.display.flip()
-            pygame.time.wait(50) # Frame delay
-            await asyncio.sleep(0)
-            currentFrame += 1
+        pygame.display.flip()
+        pygame.time.wait(30) # Frame delay
+        await asyncio.sleep(0)
+        currentFrame += 1
+
+    currentFrame = 0
+    endFrame = len(CONST.transitionImgList2)
+
+    while currentFrame < endFrame:
+        #----------------------------INPUTS-----------------------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        # -----------------------RENDER SPRITES----------------------------------
+        titleScreenImg = pygame.image.load(CONST.transitionImgList2[currentFrame]) # retrieve the image from the animation sheet
+        screen.blit(titleScreenImg, (0,0))
+
+        pygame.display.flip()
+        pygame.time.wait(50) # Frame delay
+        await asyncio.sleep(0)
+        currentFrame += 1
     await Update(screen)
     
