@@ -10,56 +10,64 @@ from pygame.locals import *
 # Other Scripts
 import constants as CONST
 
-async def Inputs():
+async def Inputs(): # General inputs
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
         keystate = pygame.key.get_pressed()
-        # if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
-        #     currentState = CONST.SETTINGS_SCREEN
-        #     print(currentState)
-        #     break
-async def RenderImages(screen, currentFrame, currentAnim):
+        if keystate[pygame.K_UP] and not CONST.menuOpen: # https://www.pygame.org/docs/ref/key.html
+            CONST.menuOpen = True
+        elif keystate[pygame.K_DOWN] and CONST.menuOpen:
+            CONST.menuOpen = False
+        
+async def RenderImages(screen, currentFrame, currentAnim): #deals with image renders
     titleScreenImg = pygame.image.load(currentAnim[currentFrame]) # retrieve the image from the animation sheet
     screen.blit(titleScreenImg, (0,0))
-    screen.blit(CONST.dropDown, (0,700))
+
+async def SimulationRender(screen): # deals with dropdown position 
+    curPos = await SimulationInputs()
+    screen.blit(CONST.dropDown, (0,curPos))
+
+async def SimulationInputs(): #returns dropdown position y val depending on menu Open state
+    if not CONST.menuOpen:
+        return 700
+    else:
+        return 300
 
 async def Update(screen):
     currentFrame = 0
     endFrame = len(CONST.settingsImgList)
-    # -------------------------------UPDATE LOOP-----------------------------------
     while CONST.currentState == CONST.SETTINGS_SCREEN:
         while currentFrame < endFrame:
             await Inputs()
             await RenderImages(screen, currentFrame, CONST.settingsImgList)
+            await SimulationRender(screen)
+            
 
             pygame.display.flip()
-            pygame.time.wait(50) # Frame delay
+            pygame.time.wait(40) # Frame delay
             await asyncio.sleep(0)
 
             currentFrame += 1
         currentFrame = 0
+
 async def Transition(screen, currentFrame, endFrame, curAnim):
-    # -------------------------------UPDATE LOOP-----------------------------------
     while currentFrame < endFrame:
-        #----------------------------INPUTS-----------------------------------------
         await Inputs()
-        # -----------------------RENDER SPRITES----------------------------------
         await RenderImages(screen, currentFrame, curAnim)
 
         pygame.display.flip()
-        pygame.time.wait(40) # Frame delay
+        pygame.time.wait(30) # Frame delay
         await asyncio.sleep(0)
 
         currentFrame += 1
 async def Start(screen):
     await Transition(screen, 0, len(CONST.transitionImgList1), CONST.transitionImgList1)
-
     await Transition(screen, 0, len(CONST.transitionImgList2), CONST.transitionImgList2)
-
     await Update(screen)
 
+#----------------------Merge sort function here-----------------------------------------------
 async def merge(left, right):
     finalList = []
     i, j, = 0, 0
@@ -77,6 +85,7 @@ async def merge(left, right):
         finalList.append(right[j])
         j += 1
     return finalList
+
 async def sort(list):
     length = len(list)
     if length < 2:

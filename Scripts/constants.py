@@ -27,6 +27,9 @@ buildTrans2 = 'Transition2/*.bmp'
 debugSettings = 'Scripts/SettingsScreen/*.bmp'
 buildSettings = 'SettingsScreen/*.bmp'
 
+debugDropDown = 'Scripts/Sprites/DropDown.png'
+buildDropDown = 'Sprites/DropDown.png'
+
 #--------------------------Images-----------------------------
 titleScreenImgList = []
 for image in glob.glob(debugTitle):
@@ -49,4 +52,7 @@ for image in glob.glob(debugSettings):
 settingsImgList.sort()
 
 #--------------------------Simulation Images-----------------------------
-dropDown = pygame.image.load('Scripts/Sprites/DropDown.png')
+dropDown = pygame.image.load(debugDropDown)
+
+#--------------------------Simulation States-----------------------------
+menuOpen = False
