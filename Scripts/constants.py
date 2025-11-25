@@ -1,4 +1,5 @@
 import glob
+import pygame
 
 # Nigel Garcia
 # constants.py
@@ -46,3 +47,6 @@ settingsImgList = []
 for image in glob.glob(debugSettings):
     settingsImgList.append(image)
 settingsImgList.sort()
+
+#--------------------------Simulation Images-----------------------------
+dropDown = pygame.image.load('Scripts/Sprites/DropDown.png')

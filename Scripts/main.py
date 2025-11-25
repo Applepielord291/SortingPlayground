@@ -11,6 +11,20 @@ from pygame.locals import *
 import simulation as SIM
 import constants as CONST
 
+async def Inputs(screen): # deals with user inputs, called in the update loop
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+    keystate = pygame.key.get_pressed()
+    if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
+        CONST.currentState = CONST.SETTINGS_SCREEN
+        await SIM.Start(screen)
+
+async def RenderImages(screen, currentFrame): # deals with the visuals on screen, called in the update loop
+    titleScreenImg = pygame.image.load(CONST.titleScreenImgList[currentFrame]) # retrieve the image from the animation sheet
+    screen.blit(titleScreenImg,(0,0)) # Display it onto the window
+
 async def Update(screen):
     # -------------------------------UPDATE LOOP-----------------------------------
     currentFrame = 0
@@ -18,19 +32,8 @@ async def Update(screen):
 
     while CONST.currentState == CONST.TITLE_SCREEN:
         while currentFrame < endFrame:
-            #----------------------------INPUTS-----------------------------------------
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-            keystate = pygame.key.get_pressed()
-            if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
-                CONST.currentState = CONST.SETTINGS_SCREEN
-                await SIM.Start(screen)
-                break
-            # -----------------------RENDER SPRITES----------------------------------
-            titleScreenImg = pygame.image.load(CONST.titleScreenImgList[currentFrame]) # retrieve the image from the animation sheet
-            screen.blit(titleScreenImg,(0,0)) # Display it onto the window
+            await Inputs(screen)
+            await RenderImages(screen, currentFrame)
 
             pygame.display.flip()
             pygame.time.wait(30) # Frame delay
