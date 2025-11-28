@@ -27,8 +27,33 @@ buildTrans2 = 'Transition2/*.bmp'
 debugSettings = 'Scripts/SettingsScreen/*.bmp'
 buildSettings = 'SettingsScreen/*.bmp'
 
+#Sprites
 debugDropDown = 'Scripts/Sprites/DropDown.png'
 buildDropDown = 'Sprites/DropDown.png'
+
+debugSizeBtn = 'Scripts/Sprites/SizeBtn.png'
+buildSizeBtn = 'Sprites/SizeBtn.png'
+
+debugSizeSelect = 'Scripts/Sprites/SizeSelect.png'
+buildSizeSelect = 'Sprites/SizeSelect.png'
+
+debugOrderBtn = 'Scripts/Sprites/OrderBtn.png'
+buildOrderBtn = 'Sprites/OrderBtn.png'
+
+debugOrderSelect = 'Scripts/Sprites/OrderSelect.png'
+buildOrderSelect = 'Sprites/OrderSelect.png'
+
+debugRandBtn = 'Scripts/Sprites/RandomBtn.png'
+buildRandBtn = 'Sprites/RandomBtn.png'
+
+debugRandSelect = 'Scripts/Sprites/RandomSelect.png'
+buildRandSelect = 'Sprites/RandomSelect.png'
+
+debugStartBtn = 'Scripts/Sprites/StartBtn.png'
+buildStartBtn = 'Sprites/StartBtn.png'
+
+debugStartSelect = 'Scripts/Sprites/StartSelect.png'
+buildStartSelect = 'Sprites/StartSelect.png'
 
 #--------------------------Images-----------------------------
 titleScreenImgList = []
@@ -53,6 +78,33 @@ settingsImgList.sort()
 
 #--------------------------Simulation Images-----------------------------
 dropDown = pygame.image.load(debugDropDown)
+sizeBtn = pygame.image.load(debugSizeBtn)
+orderBtn = pygame.image.load(debugOrderBtn)
+randBtn = pygame.image.load(debugRandBtn)
+startBtn = pygame.image.load(debugStartBtn)
+
+sizeSel = pygame.image.load(debugSizeSelect)
+orderSel = pygame.image.load(debugOrderSelect)
+randSel = pygame.image.load(debugRandSelect)
+startSel = pygame.image.load(debugStartSelect)
 
 #--------------------------Simulation States-----------------------------
 menuOpen = False
+
+#--------------------------Menu button States----------------------------
+
+CHANGE_SIZE = 1
+CHANGE_DIR = 2
+SELECT_RAND = 3
+SELECT_START = 4
+curBtn = CHANGE_SIZE
+AscOrDesc = True # True is ascending, False is descending
+
+#----------------------------List------------------------------------------
+
+length = 10
+maxVal = 300
+arr = [0] * length
+
+# Debugging bool
+x = False

@@ -11,7 +11,8 @@ from pygame.locals import *
 import simulation as SIM
 import constants as CONST
 
-async def Inputs(screen): # deals with user inputs, called in the update loop
+# deals with user inputs, called in the update loop
+async def Inputs(screen): 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -21,7 +22,8 @@ async def Inputs(screen): # deals with user inputs, called in the update loop
         CONST.currentState = CONST.SETTINGS_SCREEN
         await SIM.Start(screen)
 
-async def RenderImages(screen, currentFrame): # deals with the visuals on screen, called in the update loop
+# deals with the visuals on screen, called in the update loop
+async def RenderImages(screen, currentFrame): 
     titleScreenImg = pygame.image.load(CONST.titleScreenImgList[currentFrame]) # retrieve the image from the animation sheet
     screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
@@ -31,10 +33,9 @@ async def Update(screen):
     endFrame = len(CONST.titleScreenImgList)
 
     while CONST.currentState == CONST.TITLE_SCREEN:
-        while currentFrame < endFrame:
+        while currentFrame < endFrame: 
             await Inputs(screen)
             await RenderImages(screen, currentFrame)
-
             pygame.display.flip()
             pygame.time.wait(30) # Frame delay
             await asyncio.sleep(0)
@@ -47,28 +48,8 @@ async def main():
     pygame.display.set_caption('Merge Sort Simulation')
     display = (1200, 800)
     screen = pygame.display.set_mode(display)
-
     await Update(screen)
 
 if __name__ == "__main__":
     CONST.currentState = CONST.TITLE_SCREEN
     asyncio.run(main())
-
-
-
-# quick comment: ctrl k, ctrl c
-# import bpy
-# obdata = bpy.context.object.data
-# print("Vertices")
-# for v in obdata.vertices:
-#     print(" ({}, {}, {})".format(v.co.x, v.co.y, v.co.z))
-
-# print("edges")
-# for e in obdata.edges:
-#     print("({}, {})".format(e.vertices[0], e.vertices)[1])
-
-# print("faces")
-# for f in obdata.polygons:
-#     for v in f.vertices:
-#         print("{}, ".format(v), end='')
-#     print()
