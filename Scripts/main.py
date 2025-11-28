@@ -28,7 +28,6 @@ async def RenderImages(screen, currentFrame):
     screen.blit(titleScreenImg,(0,0)) # Display it onto the window
 
 async def Update(screen):
-    # -------------------------------UPDATE LOOP-----------------------------------
     currentFrame = 0
     endFrame = len(CONST.titleScreenImgList)
 

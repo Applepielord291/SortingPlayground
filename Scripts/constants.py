@@ -99,12 +99,19 @@ SELECT_RAND = 3
 SELECT_START = 4
 curBtn = CHANGE_SIZE
 AscOrDesc = True # True is ascending, False is descending
+RenderInput = False
+pickMaxVal = False
+pickMaxElem = False
 
 #----------------------------List------------------------------------------
 
-length = 10
+length = 6
 maxVal = 300
 arr = [0] * length
 
 # Debugging bool
 x = False
+
+#------------------------------------text------------------------------------
+pygame.font.init()
+font = pygame.font.SysFont('timesnewroman', 30)

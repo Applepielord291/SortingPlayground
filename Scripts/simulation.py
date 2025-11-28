@@ -12,16 +12,12 @@ from pygame.locals import *
 import constants as CONST
 
 # Generates a list with custom length and custom max value
-async def GenerateList(screen):
-    arr = CONST.arr
+async def GenerateList():
+    arr = [0] * CONST.length
     for i in range(CONST.length):
         randVal = int(random.random() * CONST.maxVal)
         arr[i] = randVal
-    pos = 20
     CONST.arr = arr
-    for i in range(len(CONST.arr)):
-        pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), (pos, 300, 15, CONST.arr[i]))
-        pos += 20
 
 # accepts a value and calles a function depending on the value
 async def MenuOperations(selOp):
@@ -49,26 +45,43 @@ async def Inputs(screen):
 
     # random button functionality
     if keystate[pygame.K_0] and not CONST.x: 
-        await GenerateList(screen)
+        await GenerateList()
         CONST.x = True
     
     # start button functionality
     if keystate[pygame.K_9] and CONST.x: 
-        arr = await sort(CONST.arr)
+        arr = await sort(CONST.arr, screen)
         CONST.arr = arr
         CONST.x = False
     
     # Ascending or descending Selection
     if keystate[pygame.K_8]: 
-        pass
+        if CONST.AscOrDesc:
+            CONST.AscOrDesc = False
+        else:
+            CONST.AscOrDesc = True
     
     # Max value selection
     if keystate[pygame.K_7]: 
-        pass
+        if not CONST.pickMaxVal and not CONST.pickMaxElem:
+            CONST.pickMaxVal = True
+        elif CONST.pickMaxVal and not CONST.pickMaxElem:
+            CONST.pickMaxVal = False
+    if keystate[pygame.K_d] and CONST.pickMaxVal:
+        CONST.maxVal += 1
+    elif keystate[pygame.K_a] and CONST.pickMaxVal:
+        CONST.maxVal -= 1
 
     # Element count selection
-    if keystate[pygame.K_7]: 
-        pass
+    if keystate[pygame.K_6]: 
+        if not CONST.pickMaxElem and not CONST.pickMaxVal:
+            CONST.pickMaxElem = True
+        elif CONST.pickMaxElem and not CONST.pickMaxVal:
+            CONST.pickMaxElem = False
+    if keystate[pygame.K_d] and CONST.pickMaxElem:
+        CONST.length += 1
+    elif keystate[pygame.K_a] and CONST.pickMaxElem:
+        CONST.length -= 1
     #---------------------------------------------------Debugging end---------------------------------------------------------------------
     
     # Menu Navigation
@@ -81,18 +94,19 @@ async def Inputs(screen):
         # Menu Mode Select
         if keystate[pygame.K_KP_ENTER]: 
             await MenuOperations(CONST.curBtn)
+
+# Render Sort algorithm
+async def RenderBars(screen):
+    if CONST.arr != None:
+        pos = 20
+        for i in range(len(CONST.arr)):
+            pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), (pos, 25, 15, CONST.arr[i]))
+            pos += 20
         
 # deals with image renders
 async def RenderImages(screen, currentFrame, currentAnim): 
     titleScreenImg = pygame.image.load(currentAnim[currentFrame])
     screen.blit(titleScreenImg, (0,0))
-
-    # Render list and display if its generated/sorted
-    if CONST.arr != None:
-        pos = 20
-        for i in range(len(CONST.arr)):
-            pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), (pos, 300, 15, CONST.arr[i]))
-            pos += 20
 
 # deals with menu rendering (main dropdown, all the buttons)
 async def SimulationRender(screen): 
@@ -125,6 +139,23 @@ async def SimulationInputs():
         return 700
     else:
         return 300
+    
+async def SettingsRender(screen):
+    if not CONST.pickMaxVal and not CONST.pickMaxElem: return
+
+    if CONST.pickMaxElem and not CONST.pickMaxVal:
+        displayTxt = "Max Elements: {0}".format(CONST.length)
+        text = CONST.font.render(displayTxt, True, (0, 255, 0), (0, 0, 128))
+        textRect = text.get_rect()
+        textRect.center = (1200 // 2, 400 // 2)
+        screen.blit(text, textRect)
+    
+    if CONST.pickMaxVal and not CONST.pickMaxElem:
+        displayTxt = "Max Value: {0}".format(CONST.maxVal)
+        text = CONST.font.render(displayTxt, True, (0, 255, 0), (0, 0, 128))
+        textRect = text.get_rect()
+        textRect.center = (1200 // 2, 400 // 2)
+        screen.blit(text, textRect)
 
 # Render loop
 async def Update(screen):
@@ -134,7 +165,9 @@ async def Update(screen):
         while currentFrame < endFrame:
             await Inputs(screen)
             await RenderImages(screen, currentFrame, CONST.settingsImgList)
+            await RenderBars(screen)
             await SimulationRender(screen)
+            await SettingsRender(screen)
             pygame.display.flip()
             pygame.time.wait(40) # Frame delay
             await asyncio.sleep(0)
@@ -158,32 +191,39 @@ async def Start(screen):
     await Update(screen)
 
 # Merge sort
-async def merge(left, right):
+async def merge(left, right, screen):
     finalList = []
     i, j, = 0, 0
     while i < len(left) and j < len(right):
-        print(left, right)
-        if left[i] <= right[j]:
-            finalList.append(left[i])
-            i += 1
+        if CONST.AscOrDesc:
+            if left[i] <= right[j]:
+                finalList.append(left[i])
+                i += 1
+            else:
+                finalList.append(right[j])
+                j += 1
         else:
-            finalList.append(right[j])
-            j += 1
+            if left[i] >= right[j]:
+                finalList.append(left[i])
+                i += 1
+            else:
+                finalList.append(right[j])
+                j += 1
+        await RenderBars(screen)
     while i < len(left):
-        print(finalList)
         finalList.append(left[i])
         i += 1
     while j < len(right):
-        print(finalList)
         finalList.append(right[j])
         j += 1
     return finalList
-async def sort(list):
+async def sort(list, screen):
     length = len(list)
     if length < 2:
         return(list)
     else:
         left = list[:length//2]
         right = list[length//2:]
-    return await merge(await sort(left), await sort(right))
+        print(left, right)
+    return await merge(await sort(left, screen), await sort(right, screen), screen)
     
