@@ -6,13 +6,14 @@ import pygame
 # Many variables that needs to be accessed globally are stored here.
 
 # Window States
-currentState = 0
+
 
 # Constant States
-TITLE_SCREEN = 0
-SETTINGS_SCREEN = 1
-SIMULATION_SCREEN = 2
-INFO_SCREEN = 3
+CLICK_SCREEN = 0
+MENU_SCREEN = 1
+SHOP_SCREEN = 2
+
+currentState = CLICK_SCREEN
 
 #--------------------------Paths-----------------------------
 debugTitle = 'Scripts/TitleScreen/*.bmp'
@@ -37,6 +38,12 @@ buildSizeBtn = 'Sprites/SizeBtn.png'
 debugSizeSelect = 'Scripts/Sprites/SizeSelect.png'
 buildSizeSelect = 'Sprites/SizeSelect.png'
 
+debugMaxBtn = 'Scripts/Sprites/MaxValBtn.png'
+buildMaxBtn = 'Sprites/MaxValBtn.png'
+
+debugMaxSelect = 'Scripts/Sprites/MaxValSelect.png'
+buildMaxSelect = 'Sprites/MaxValSelect.png'
+
 debugOrderBtn = 'Scripts/Sprites/OrderBtn.png'
 buildOrderBtn = 'Sprites/OrderBtn.png'
 
@@ -54,6 +61,15 @@ buildStartBtn = 'Sprites/StartBtn.png'
 
 debugStartSelect = 'Scripts/Sprites/StartSelect.png'
 buildStartSelect = 'Sprites/StartSelect.png'
+
+debugShopBtn = 'Scripts/Sprites/ShopBtn.png'
+buildShopBtn = 'Sprites/ShopBtn.png'
+
+debugShopSel = 'Scripts/Sprites/ShopSel.png'
+buildShopSel = 'Sprites/ShopSel.png'
+
+debugArrowSel = 'Scripts/Sprites/ArrowSelect.png'
+buildArrowSel = 'Sprites/ArrowSelect.png'
 
 #--------------------------Images-----------------------------
 titleScreenImgList = []
@@ -78,15 +94,22 @@ settingsImgList.sort()
 
 #--------------------------Simulation Images-----------------------------
 dropDown = pygame.image.load(debugDropDown)
+
+shopArrowSel = pygame.image.load(debugArrowSel)
+
 sizeBtn = pygame.image.load(debugSizeBtn)
+maxBtn = pygame.image.load(debugMaxBtn)
 orderBtn = pygame.image.load(debugOrderBtn)
 randBtn = pygame.image.load(debugRandBtn)
 startBtn = pygame.image.load(debugStartBtn)
+shopBtn = pygame.image.load(debugShopBtn)
 
 sizeSel = pygame.image.load(debugSizeSelect)
+maxSel = pygame.image.load(debugMaxSelect)
 orderSel = pygame.image.load(debugOrderSelect)
 randSel = pygame.image.load(debugRandSelect)
 startSel = pygame.image.load(debugStartSelect)
+shopSel = pygame.image.load(debugShopSel)
 
 #--------------------------Simulation States-----------------------------
 menuOpen = False
@@ -94,24 +117,76 @@ menuOpen = False
 #--------------------------Menu button States----------------------------
 
 CHANGE_SIZE = 1
-CHANGE_DIR = 2
-SELECT_RAND = 3
-SELECT_START = 4
+CHANGE_MAX = 2
+CHANGE_DIR = 3
+SHOP_SEL = 4
 curBtn = CHANGE_SIZE
 AscOrDesc = True # True is ascending, False is descending
 RenderInput = False
 pickMaxVal = False
 pickMaxElem = False
+shopOpen = False
 
 #----------------------------List------------------------------------------
 
-length = 6
+length = 3
 maxVal = 300
 arr = [0] * length
 
-# Debugging bool
-x = False
+canSort = False
 
 #------------------------------------text------------------------------------
 pygame.font.init()
-font = pygame.font.SysFont('timesnewroman', 30)
+font = pygame.font.SysFont('timesnewroman', 24)
+
+#----------------------------game variables------------------------------------
+timesSorted = 0
+sortedElements = 0
+
+shopItems = ["MergeSort Script", 
+             "MergeSort School",
+             "MergeSort Factory",
+             "MergeSort Fractal",
+             "MergeSort Portal",
+             "MergeSort Universe",
+             "SuperComputer",
+             "Elements"]
+
+shopItemCount = [0,
+                 0,
+                 0,
+                 0,
+                 0,
+                 0,
+                 0,
+                 0]
+
+shopItemPrice = [500,
+                 2500,
+                 10000,
+                 50000,
+                 100000,
+                 1000000,
+                 1500000,
+                 25]
+
+shopItemCurrency = ["SE",
+                    "SE",
+                    "SE",
+                    "SE",
+                    "SE",
+                    "SE",
+                    "SE",
+                    "TS"]
+
+
+SCRIPT = 0
+SCHOOL = 1
+FACTORY = 2
+FRACTAL = 3
+PORTAL = 4
+UNIVERSE = 5
+SUPERCOMPUTER = 6
+ELEMENT = 7
+BACK = 8
+curShopSel = BACK

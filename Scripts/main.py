@@ -19,7 +19,6 @@ async def Inputs(screen):
             quit()
     keystate = pygame.key.get_pressed()
     if keystate[pygame.K_SPACE]: # https://www.pygame.org/docs/ref/key.html
-        CONST.currentState = CONST.SETTINGS_SCREEN
         await SIM.Start(screen)
 
 # deals with the visuals on screen, called in the update loop
@@ -31,9 +30,9 @@ async def Update(screen):
     currentFrame = 0
     endFrame = len(CONST.titleScreenImgList)
 
-    while CONST.currentState == CONST.TITLE_SCREEN:
+    while True:
         while currentFrame < endFrame: 
-            await Inputs(screen)
+            await Inputs(screen) 
             await RenderImages(screen, currentFrame)
             pygame.display.flip()
             pygame.time.wait(30) # Frame delay
@@ -49,6 +48,5 @@ async def main():
     screen = pygame.display.set_mode(display)
     await Update(screen)
 
-if __name__ == "__main__":
-    CONST.currentState = CONST.TITLE_SCREEN
+if __name__ == "__main__": 
     asyncio.run(main())
