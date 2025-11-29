@@ -10,13 +10,17 @@ from pygame.locals import *
 
 # Other Scripts
 import constants as CONST
+import questions as QUEST
+
 async def StateManager():
-    if CONST.menuOpen and not CONST.shopOpen:
+    if CONST.menuOpen and not CONST.shopOpen and not CONST.errorUp:
         CONST.currentState = CONST.MENU_SCREEN
-    elif CONST.shopOpen:
+    elif CONST.shopOpen and not CONST.errorUp:
         CONST.currentState = CONST.SHOP_SCREEN
-    elif not CONST.menuOpen and not CONST.shopOpen:
+    elif not CONST.menuOpen and not CONST.shopOpen and not CONST.errorUp:
         CONST.currentState = CONST.CLICK_SCREEN
+    elif CONST.errorUp:
+        CONST.currentState = CONST.ERROR_SCREEN
 
 # Generates a list with custom length and custom max value
 async def GenerateList():
@@ -68,6 +72,15 @@ async def BuyItem(selItem):
             CONST.length += 1
             CONST.shopItemPrice[selItem] += 50
 
+async def ErrorResult(selVal, screen):
+    if selVal == CONST.selError.correctAnswer:
+        CONST.correct = True
+        CONST.growthMult += 1
+    else:
+        CONST.correct = False
+        CONST.sortedElements //= 1.25
+
+    CONST.errorUp = False
 
 # Input manager
 async def Inputs(screen): 
@@ -97,19 +110,6 @@ async def Inputs(screen):
         if keystate[pygame.K_UP] and not CONST.menuOpen: # https://www.pygame.org/docs/ref/key.html
             CONST.menuOpen = True
     
-    #------------------------------------------------Debugging start----------------------------------------------------------------
-        
-    # if keystate[pygame.K_d] and CONST.pickMaxVal:
-    #     CONST.maxVal += 1
-    # elif keystate[pygame.K_a] and CONST.pickMaxVal:
-    #     CONST.maxVal -= 1
-
-    # if keystate[pygame.K_d] and CONST.pickMaxElem:
-    #     CONST.length += 1
-    # elif keystate[pygame.K_a] and CONST.pickMaxElem:
-    #     CONST.length -= 1
-    #---------------------------------------------------Debugging end---------------------------------------------------------------------
-    
     # Menu Navigation
     if CONST.currentState == CONST.MENU_SCREEN: 
         if keystate[pygame.K_DOWN] and CONST.menuOpen:
@@ -125,16 +125,26 @@ async def Inputs(screen):
             await MenuOperations(CONST.curBtn, screen)
     
     if CONST.currentState == CONST.SHOP_SCREEN:
-        if keystate[pygame.K_DOWN] and CONST.curShopSel < CONST.BACK:
+        if keystate[pygame.K_DOWN] and CONST.curShopSel < CONST.ELEMENT:
             CONST.curShopSel += 1
         elif keystate[pygame.K_UP] and CONST.curShopSel > CONST.SCRIPT:
             CONST.curShopSel -= 1
         
         if keystate[pygame.K_RETURN]:
-            if CONST.curShopSel != CONST.BACK:
-                await BuyItem(CONST.curShopSel)
-            else:
-                CONST.shopOpen = False
+            await BuyItem(CONST.curShopSel)
+        elif keystate[pygame.K_ESCAPE]:
+            CONST.shopOpen = False
+
+    # error inputs
+    if CONST.currentState == CONST.ERROR_SCREEN:
+        if keystate[pygame.K_DOWN] and CONST.selAns < 3:
+            CONST.selAns += 1
+        elif keystate[pygame.K_UP] and CONST.selAns > 0:
+            CONST.selAns -= 1
+        
+        if keystate[pygame.K_RETURN]:
+            await ErrorResult(CONST.selAns, screen)
+
 
 # Render Sort algorithm
 async def RenderBars(screen):
@@ -213,7 +223,7 @@ async def SettingsRender(screen):
         screen.blit(text, textRect)
 
 async def SideBarRender(screen):
-    displayTxt = "Sort Stats: Size: {0} || Max: {1} || Asc: {2} || Times sorted: {3} || Sorted Elements: {4}".format(CONST.length, CONST.maxVal, CONST.AscOrDesc, CONST.timesSorted, CONST.sortedElements)
+    displayTxt = "Size: {0}|Growth Rate: {1}|Previous Answer: {2}|Times sorted: {3}|Sorted Elements: {4}".format(CONST.length, CONST.growthMult, CONST.correct, CONST.timesSorted, CONST.sortedElements)
 
     text = CONST.font.render(displayTxt, True, (0, 255, 0), (0, 0, 0, 0))
     textRect = text.get_rect()
@@ -232,13 +242,79 @@ async def ShopRender(screen):
             screen.blit(text, textRect)
 
             if CONST.curShopSel == i:
-                screen.blit(CONST.shopArrowSel, (850, posY-15))
+                screen.blit(CONST.shopArrowSel, (850, posY-15)) #-15 arrow y offset
             posY += 35
+        exitTxt = "ESCAPE to exit"
+        text = CONST.font.render(exitTxt, True, (0, 255, 0), (0, 0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (1200 // 2, posY)
+        screen.blit(text, textRect)
     
+# Passive income from upgrades
 async def MoneyGen():
     for i in range(len(CONST.shopItemCount)-1):
         if CONST.shopItemCount[i] != 0:
-            CONST.sortedElements += CONST.shopItemCount[i] * i+1
+            CONST.sortedElements += CONST.shopItemCount[i] * i+CONST.growthMult
+
+# Answer merge sort related questions for MONEY
+async def ErrorChance():
+    rand = int(random.random() * 5000)
+    if rand == 1 and CONST.currentState != CONST.ERROR_SCREEN:
+        CONST.prevState = CONST.currentState
+        CONST.errorUp = True
+        randVal = int(random.random() * len(QUEST.errors))
+        return randVal
+
+# Error popup render
+async def ErrorRender(screen, val):
+    pygame.draw.rect(screen, pygame.Color(0, 0, 0, 200), (1200 // 10, 75, 1200 // 1.25, 700))
+    posY = 100
+    CONST.selError = QUEST.errors[val]
+    title = "ERROR"
+    titleText = CONST.errorFont.render(title, True, (255, 0, 0), (0, 0, 0, 0))
+    titleTextRect = titleText.get_rect()
+    titleTextRect.center = (1200 // 2, posY)
+    screen.blit(titleText, titleTextRect)
+    posY += 20
+
+    exitTxt = "CORRECT: UPGRADES GENERATE SE FASTER"
+    text = CONST.errorFont.render(exitTxt, True, (255, 0, 0), (0, 0, 0, 0))
+    textRect = text.get_rect()
+    textRect.center = (1200 // 2, posY)
+    screen.blit(text, textRect)
+    posY += 20
+
+    exitTxt = "INCORRECT: LOST 25% SE"
+    text = CONST.errorFont.render(exitTxt, True, (255, 0, 0), (0, 0, 0, 0))
+    textRect = text.get_rect()
+    textRect.center = (1200 // 2, posY)
+    screen.blit(text, textRect)
+    posY += 20
+
+    question = "QUESTION: {0}".format(CONST.selError.question)
+    questionText = CONST.errorFont.render(question, True, (255, 0, 0), (0, 0, 0, 0))
+    questionTextRect = questionText.get_rect()
+    questionTextRect.center = (1200 // 2, posY)
+    screen.blit(questionText, questionTextRect)
+    posY += 30
+
+    for i in range(len(CONST.selError.codeSnippet)):
+        codeSnip = "{0}".format(CONST.selError.codeSnippet[i])
+        text = CONST.errorFont.render(codeSnip, True, (255, 0, 0), (0, 0, 0, 0))
+        textRect = text.get_rect()
+        textRect.midleft = (1200 // 3.5, posY)
+        screen.blit(text, textRect)
+        posY += 20
+    posY += 20
+    for i in range(len(CONST.selError.answers)):
+        answers = "{0}: {1}".format(i+1, CONST.selError.answers[i])
+        text = CONST.errorFont.render(answers, True, (255, 0, 0), (0, 0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (1200 // 2, posY)
+        screen.blit(text, textRect)
+        if CONST.selAns == i:
+            screen.blit(CONST.shopArrowSel, (850, posY-15)) #-15 arrow y offset
+        posY += 20
 
 # Render loop
 async def Update(screen):
@@ -257,6 +333,10 @@ async def Update(screen):
             
             # Gameplay loops
             await MoneyGen()
+            if not CONST.errorUp:
+                CONST.quest = await ErrorChance()
+            elif CONST.errorUp:
+                await ErrorRender(screen, CONST.quest)
 
             pygame.display.flip()
             pygame.time.wait(40) # Frame delay

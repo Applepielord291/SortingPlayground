@@ -12,8 +12,11 @@ import pygame
 CLICK_SCREEN = 0
 MENU_SCREEN = 1
 SHOP_SCREEN = 2
+ERROR_SCREEN = 3
+RESULT_SCREEN = 4
 
 currentState = CLICK_SCREEN
+prevState = CLICK_SCREEN
 
 #--------------------------Paths-----------------------------
 debugTitle = 'Scripts/TitleScreen/*.bmp'
@@ -138,6 +141,7 @@ canSort = False
 #------------------------------------text------------------------------------
 pygame.font.init()
 font = pygame.font.SysFont('timesnewroman', 24)
+errorFont = pygame.font.SysFont('timesnewroman', 15)
 
 #----------------------------game variables------------------------------------
 timesSorted = 0
@@ -188,5 +192,12 @@ PORTAL = 4
 UNIVERSE = 5
 SUPERCOMPUTER = 6
 ELEMENT = 7
-BACK = 8
-curShopSel = BACK
+curShopSel = SCRIPT
+
+errorUp = False
+selAns = 0
+selError = None
+quest = 0
+correct = False
+
+growthMult = 1

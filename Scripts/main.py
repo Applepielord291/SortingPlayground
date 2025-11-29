@@ -5,7 +5,7 @@ from pygame.locals import *
 # Nigel Garcia
 # main.py
 # Main script, run this to run the program.
-# This is the title screen, which can transition into the Simulation screen.
+# This is the title screen, which can transition into the Simulation screen. 
 
 # Other Scripts
 import simulation as SIM
@@ -14,7 +14,7 @@ import constants as CONST
 # deals with user inputs, called in the update loop
 async def Inputs(screen): 
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT:  
             pygame.quit()
             quit()
     keystate = pygame.key.get_pressed()
@@ -28,7 +28,7 @@ async def RenderImages(screen, currentFrame):
 
 async def Update(screen):
     currentFrame = 0
-    endFrame = len(CONST.titleScreenImgList)
+    endFrame = len(CONST.titleScreenImgList)   
 
     while True:
         while currentFrame < endFrame: 
@@ -48,5 +48,5 @@ async def main():
     screen = pygame.display.set_mode(display)
     await Update(screen)
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     asyncio.run(main())
