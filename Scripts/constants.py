@@ -68,11 +68,17 @@ buildStartSelect = 'Sprites/StartSelect.png'
 debugShopBtn = 'Scripts/Sprites/ShopBtn.png'
 buildShopBtn = 'Sprites/ShopBtn.png'
 
+debugReadyBtn = 'Scripts/Sprites/ReadyBtn.png'
+buildReadyBtn = 'Sprites/ReadyBtn.png'
+
 debugShopSel = 'Scripts/Sprites/ShopSel.png'
 buildShopSel = 'Sprites/ShopSel.png'
 
 debugArrowSel = 'Scripts/Sprites/ArrowSelect.png'
 buildArrowSel = 'Sprites/ArrowSelect.png'
+
+debugShopTitle = 'Scripts/Sprites/ShopTitle.png'
+buildShopTitle = 'Sprites/ShopTitle.png'
 
 #--------------------------Images-----------------------------
 titleScreenImgList = []
@@ -99,6 +105,7 @@ settingsImgList.sort()
 dropDown = pygame.image.load(debugDropDown)
 
 shopArrowSel = pygame.image.load(debugArrowSel)
+shopTitle = pygame.image.load(debugShopTitle)
 
 sizeBtn = pygame.image.load(debugSizeBtn)
 maxBtn = pygame.image.load(debugMaxBtn)
@@ -106,6 +113,7 @@ orderBtn = pygame.image.load(debugOrderBtn)
 randBtn = pygame.image.load(debugRandBtn)
 startBtn = pygame.image.load(debugStartBtn)
 shopBtn = pygame.image.load(debugShopBtn)
+readyBtn = pygame.image.load(debugReadyBtn)
 
 sizeSel = pygame.image.load(debugSizeSelect)
 maxSel = pygame.image.load(debugMaxSelect)
@@ -118,12 +126,8 @@ shopSel = pygame.image.load(debugShopSel)
 menuOpen = False
 
 #--------------------------Menu button States----------------------------
-
-CHANGE_SIZE = 1
-CHANGE_MAX = 2
-CHANGE_DIR = 3
-SHOP_SEL = 4
-curBtn = CHANGE_SIZE
+SHOP_SEL = 0
+curBtn = SHOP_SEL
 AscOrDesc = True # True is ascending, False is descending
 RenderInput = False
 pickMaxVal = False
@@ -133,6 +137,7 @@ shopOpen = False
 #----------------------------List------------------------------------------
 
 length = 3
+MAX_LENGTH = 58
 maxVal = 300
 arr = [0] * length
 
@@ -140,8 +145,8 @@ canSort = False
 
 #------------------------------------text------------------------------------
 pygame.font.init()
-font = pygame.font.SysFont('timesnewroman', 24)
-errorFont = pygame.font.SysFont('timesnewroman', 15)
+font = pygame.font.SysFont('freesansbold', 36)
+errorFont = pygame.font.SysFont('freesansbold', 24)
 
 #----------------------------game variables------------------------------------
 timesSorted = 0

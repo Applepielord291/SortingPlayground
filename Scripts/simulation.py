@@ -12,6 +12,8 @@ from pygame.locals import *
 import constants as CONST
 import questions as QUEST
 
+# State manager
+# Too many bool values for a single state, decided to make it more readable and assign a set of bools to a single int
 async def StateManager():
     if CONST.menuOpen and not CONST.shopOpen and not CONST.errorUp:
         CONST.currentState = CONST.MENU_SCREEN
@@ -30,36 +32,15 @@ async def GenerateList():
         arr[i] = randVal
     CONST.arr = arr
 
-# accepts a value and calles a function depending on the value
-async def MenuOperations(selOp, screen):
-    if selOp == CONST.CHANGE_DIR:
-        if CONST.AscOrDesc:
-            CONST.AscOrDesc = False
-        else:
-            CONST.AscOrDesc = True
-    
-    elif selOp == CONST.CHANGE_SIZE:
-        if not CONST.pickMaxElem:
-            CONST.pickMaxElem = True
-            CONST.pickMaxVal = False
-        else:
-            CONST.pickMaxElem = False
-            CONST.pickMaxVal = False
-    
-    elif selOp == CONST.CHANGE_MAX:
-        if not CONST.pickMaxVal:
-            CONST.pickMaxElem = False
-            CONST.pickMaxVal = True
-        else:
-            CONST.pickMaxElem = False
-            CONST.pickMaxVal = False
-
-    elif selOp == CONST.SHOP_SEL:
+# accepts a value (the selected button) 
+async def MenuOperations(selOp):
+    if selOp == CONST.SHOP_SEL:
         if not CONST.shopOpen:
             CONST.shopOpen = True
         else:
             CONST.shopOpen = False
 
+# Buy items, scaling price
 async def BuyItem(selItem):
     if CONST.shopItems[selItem] != "Elements":
         if CONST.sortedElements >= CONST.shopItemPrice[selItem]:
@@ -67,12 +48,13 @@ async def BuyItem(selItem):
             CONST.sortedElements -= CONST.shopItemPrice[selItem]
             CONST.shopItemPrice[selItem] //= 0.95
     else:
-        if CONST.timesSorted >= CONST.shopItemPrice[selItem]:
+        if CONST.timesSorted >= CONST.shopItemPrice[selItem] and CONST.length < CONST.MAX_LENGTH:
             CONST.shopItemCount[selItem] += 1
             CONST.length += 1
-            CONST.shopItemPrice[selItem] += 50
+            CONST.shopItemPrice[selItem] += 200
 
-async def ErrorResult(selVal, screen):
+# Result after answering an error question
+async def ErrorResult(selVal):
     if selVal == CONST.selError.correctAnswer:
         CONST.correct = True
         CONST.growthMult += 1
@@ -107,7 +89,7 @@ async def Inputs(screen):
             CONST.canSort = True
 
         # Opening/Closing Menu
-        if keystate[pygame.K_UP] and not CONST.menuOpen: # https://www.pygame.org/docs/ref/key.html
+        if keystate[pygame.K_UP] and not CONST.menuOpen:
             CONST.menuOpen = True
     
     # Menu Navigation
@@ -117,33 +99,36 @@ async def Inputs(screen):
         
         if keystate[pygame.K_RIGHT] and CONST.curBtn < CONST.SHOP_SEL:
             CONST.curBtn += 1
-        elif keystate[pygame.K_LEFT] and CONST.curBtn > CONST.CHANGE_SIZE:
+        elif keystate[pygame.K_LEFT] and CONST.curBtn > CONST.SHOP_SEL:
             CONST.curBtn -= 1
         
         # Menu Mode Select
         if keystate[pygame.K_RETURN]: 
-            await MenuOperations(CONST.curBtn, screen)
+            await MenuOperations(CONST.curBtn)
     
+    # Shop navigation
     if CONST.currentState == CONST.SHOP_SCREEN:
         if keystate[pygame.K_DOWN] and CONST.curShopSel < CONST.ELEMENT:
             CONST.curShopSel += 1
         elif keystate[pygame.K_UP] and CONST.curShopSel > CONST.SCRIPT:
             CONST.curShopSel -= 1
         
+        # Buy an upgrade
         if keystate[pygame.K_RETURN]:
             await BuyItem(CONST.curShopSel)
         elif keystate[pygame.K_ESCAPE]:
             CONST.shopOpen = False
 
-    # error inputs
+    # Error screen navigation
     if CONST.currentState == CONST.ERROR_SCREEN:
         if keystate[pygame.K_DOWN] and CONST.selAns < 3:
             CONST.selAns += 1
         elif keystate[pygame.K_UP] and CONST.selAns > 0:
             CONST.selAns -= 1
         
+        # Select an answer
         if keystate[pygame.K_RETURN]:
-            await ErrorResult(CONST.selAns, screen)
+            await ErrorResult(CONST.selAns)
 
 
 # Render Sort algorithm
@@ -153,12 +138,9 @@ async def RenderBars(screen):
         for i in range(len(CONST.arr)):
             pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), (pos, 75, 15, CONST.arr[i]))
             pos += 20
-
-async def RenderTransitions(screen, currentFrame, currentAnim):
-    titleScreenImg = pygame.image.load(currentAnim[currentFrame])
-    screen.blit(titleScreenImg, (0,0))
         
-# deals with image renders
+# deals with image renders in the clicking screen
+# so the main animation, and click buttons
 async def RenderImages(screen, currentFrame, currentAnim): 
     titleScreenImg = pygame.image.load(currentAnim[currentFrame])
     screen.blit(titleScreenImg, (0,0))
@@ -178,25 +160,10 @@ async def SimulationRender(screen):
 
     # render buttons
     if CONST.menuOpen:
-        if CONST.curBtn == 1:
-            screen.blit(CONST.sizeSel, (30, 400))
+        if CONST.curBtn == CONST.SHOP_SEL:
+            screen.blit(CONST.shopSel, (1200 // 2.5, 400))
         else:
-            screen.blit(CONST.sizeBtn, (30, 400))
-
-        if CONST.curBtn == 2:
-            screen.blit(CONST.maxSel, (260, 400))
-        else:
-            screen.blit(CONST.maxBtn, (260, 400))
-
-        if CONST.curBtn == 3:
-            screen.blit(CONST.orderSel, (490, 400))
-        else:
-            screen.blit(CONST.orderBtn, (490, 400))
-        
-        if CONST.curBtn == 4:
-            screen.blit(CONST.shopSel, (720, 400))
-        else:
-            screen.blit(CONST.shopBtn, (720, 400))
+            screen.blit(CONST.shopBtn, (1200 // 2.5, 400))
     
 # returns dropdown position y value depending on menu state
 async def SimulationInputs(): 
@@ -204,35 +171,26 @@ async def SimulationInputs():
         return 700
     else:
         return 300
-    
-async def SettingsRender(screen):
-    if not CONST.pickMaxVal and not CONST.pickMaxElem: return
-
-    if CONST.pickMaxElem and not CONST.pickMaxVal:
-        displayTxt = "Max Elements: {0}".format(CONST.length)
-        text = CONST.font.render(displayTxt, True, (0, 255, 0), (0, 0, 0, 0))
-        textRect = text.get_rect()
-        textRect.center = (1200 // 2, 1200 // 2)
-        screen.blit(text, textRect)
-    
-    if CONST.pickMaxVal and not CONST.pickMaxElem:
-        displayTxt = "Max Value: {0}".format(CONST.maxVal)
-        text = CONST.font.render(displayTxt, True, (0, 255, 0), (0, 0, 0, 0))
-        textRect = text.get_rect()
-        textRect.center = (1200 // 2, 1200 // 2)
-        screen.blit(text, textRect)
 
 async def SideBarRender(screen):
-    displayTxt = "Size: {0}|Growth Rate: {1}|Previous Answer: {2}|Times sorted: {3}|Sorted Elements: {4}".format(CONST.length, CONST.growthMult, CONST.correct, CONST.timesSorted, CONST.sortedElements)
+    displayTxt = "List Size: {0} || Max Size: {1} || Growth Rate: {2} || Previous Answer: {3}".format(CONST.length, CONST.MAX_LENGTH, CONST.growthMult, CONST.correct)
+    displayTxt2 = "Times Sorted (TS): {0} || Sorted Elements (SE): {1}".format(CONST.timesSorted, CONST.sortedElements)
 
     text = CONST.font.render(displayTxt, True, (0, 255, 0), (0, 0, 0, 0))
     textRect = text.get_rect()
+    textRect.center = (1200 // 2, 15)
+    screen.blit(text, textRect)
+
+    text = CONST.font.render(displayTxt2, True, (0, 255, 0), (0, 0, 0, 0))
+    textRect = text.get_rect()
+    textRect.center = (1200 // 2, 45)
     screen.blit(text, textRect)
 
 # Renders shop menu
 async def ShopRender(screen):
     if CONST.shopOpen:
         pygame.draw.rect(screen, pygame.Color(0, 0, 0, 200), (1200 // 4, 150, 1200 // 2, 500))
+        screen.blit(CONST.shopTitle, (1200 // 2.5, 90))
         posY = 200
         for i in range(len(CONST.shopItems)):
             displayTxt = "{0} {1}: {2} {3}".format(CONST.shopItemCount[i], CONST.shopItems[i], CONST.shopItemPrice[i], CONST.shopItemCurrency[i])
@@ -247,14 +205,14 @@ async def ShopRender(screen):
         exitTxt = "ESCAPE to exit"
         text = CONST.font.render(exitTxt, True, (0, 255, 0), (0, 0, 0, 0))
         textRect = text.get_rect()
-        textRect.center = (1200 // 2, posY)
+        textRect.center = (1200 // 2, posY + 40)
         screen.blit(text, textRect)
     
 # Passive income from upgrades
 async def MoneyGen():
     for i in range(len(CONST.shopItemCount)-1):
         if CONST.shopItemCount[i] != 0:
-            CONST.sortedElements += CONST.shopItemCount[i] * i+CONST.growthMult
+            CONST.sortedElements += CONST.shopItemCount[i] * ((i+1)+CONST.growthMult)
 
 # Answer merge sort related questions for MONEY
 async def ErrorChance():
@@ -322,13 +280,16 @@ async def Update(screen):
     endFrame = len(CONST.settingsImgList)
     while True:
         while currentFrame < endFrame:
+            # All of these are rendered in a certain order
+            # The functions called first means they are rendered first, and below everything else
+            # Functions called last are rendered in front of everything
+            # If youve ever used drawing software, I like to think of it as image layers.
             await StateManager()
             await Inputs(screen)
             await RenderImages(screen, currentFrame, CONST.settingsImgList)
             await SideBarRender(screen)
             await RenderBars(screen)
             await SimulationRender(screen)
-            await SettingsRender(screen)
             await ShopRender(screen)
             
             # Gameplay loops
@@ -344,23 +305,8 @@ async def Update(screen):
             currentFrame += 1
         currentFrame = 0
 
-# Transition loop: runs once and before the update loop
-async def Transition(screen, currentFrame, endFrame, curAnim):
-    while currentFrame < endFrame:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-        await RenderTransitions(screen, currentFrame, curAnim)
-        pygame.display.flip()
-        pygame.time.wait(30) # Frame delay
-        await asyncio.sleep(0)
-        currentFrame += 1
-
 # OnStart
 async def Start(screen):
-    await Transition(screen, 0, len(CONST.transitionImgList1), CONST.transitionImgList1)
-    await Transition(screen, 0, len(CONST.transitionImgList2), CONST.transitionImgList2)
     await Update(screen)
 
 # Merge sort
