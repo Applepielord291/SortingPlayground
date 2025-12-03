@@ -1,4 +1,3 @@
-
 # Nigel Garcia
 # questions.py
 # Question class to display questions cause its funny

@@ -5,9 +5,6 @@ import pygame
 # constants.py
 # Many variables that needs to be accessed globally are stored here.
 
-# Window States
-
-
 # Constant States
 CLICK_SCREEN = 0
 MENU_SCREEN = 1
@@ -19,39 +16,21 @@ currentState = CLICK_SCREEN
 prevState = CLICK_SCREEN
 
 #--------------------------Paths-----------------------------
-debugTitle = 'Scripts/TitleScreen/*.bmp'
-buildTitle = 'TitleScreen/*.bmp'
+debugTitle = 'Scripts/TitleScreen/*.jpg'
+buildTitle = 'TitleScreen/*.jpg'
 
-debugTrans1 = 'Scripts/Transition1/*.bmp'
-buildTrans1 = 'Transition1/*.bmp'
+debugTrans1 = 'Scripts/Transition1/*.jpg'
+buildTrans1 = 'Transition1/*.jpg'
 
-debugTrans2 = 'Scripts/Transition2/*.bmp'
-buildTrans2 = 'Transition2/*.bmp'
+debugTrans2 = 'Scripts/Transition2/*.jpg'
+buildTrans2 = 'Transition2/*.jpg'
 
-debugSettings = 'Scripts/SettingsScreen/*.bmp'
-buildSettings = 'SettingsScreen/*.bmp'
+debugSettings = 'Scripts/SettingsScreen/*.jpg'
+buildSettings = 'SettingsScreen/*.jpg'
 
 #Sprites
 debugDropDown = 'Scripts/Sprites/DropDown.png'
 buildDropDown = 'Sprites/DropDown.png'
-
-debugSizeBtn = 'Scripts/Sprites/SizeBtn.png'
-buildSizeBtn = 'Sprites/SizeBtn.png'
-
-debugSizeSelect = 'Scripts/Sprites/SizeSelect.png'
-buildSizeSelect = 'Sprites/SizeSelect.png'
-
-debugMaxBtn = 'Scripts/Sprites/MaxValBtn.png'
-buildMaxBtn = 'Sprites/MaxValBtn.png'
-
-debugMaxSelect = 'Scripts/Sprites/MaxValSelect.png'
-buildMaxSelect = 'Sprites/MaxValSelect.png'
-
-debugOrderBtn = 'Scripts/Sprites/OrderBtn.png'
-buildOrderBtn = 'Sprites/OrderBtn.png'
-
-debugOrderSelect = 'Scripts/Sprites/OrderSelect.png'
-buildOrderSelect = 'Sprites/OrderSelect.png'
 
 debugRandBtn = 'Scripts/Sprites/RandomBtn.png'
 buildRandBtn = 'Sprites/RandomBtn.png'
@@ -82,45 +61,39 @@ buildShopTitle = 'Sprites/ShopTitle.png'
 
 #--------------------------Images-----------------------------
 titleScreenImgList = []
-for image in glob.glob(debugTitle):
+for image in glob.glob(buildTitle):
     titleScreenImgList.append(image)
 titleScreenImgList.sort()
 
 transitionImgList1 = []
-for image in glob.glob(debugTrans1):
+for image in glob.glob(buildTrans1):
     transitionImgList1.append(image)
 transitionImgList1.sort()
 
 transitionImgList2 = []
-for image in glob.glob(debugTrans2):
+for image in glob.glob(buildTrans2):
     transitionImgList2.append(image)
 transitionImgList2.sort()
 
 settingsImgList = []
-for image in glob.glob(debugSettings):
+for image in glob.glob(buildSettings):
     settingsImgList.append(image)
 settingsImgList.sort()
 
 #--------------------------Simulation Images-----------------------------
-dropDown = pygame.image.load(debugDropDown)
+dropDown = pygame.image.load(buildDropDown)
 
-shopArrowSel = pygame.image.load(debugArrowSel)
-shopTitle = pygame.image.load(debugShopTitle)
+shopArrowSel = pygame.image.load(buildArrowSel)
+shopTitle = pygame.image.load(buildShopTitle)
 
-sizeBtn = pygame.image.load(debugSizeBtn)
-maxBtn = pygame.image.load(debugMaxBtn)
-orderBtn = pygame.image.load(debugOrderBtn)
-randBtn = pygame.image.load(debugRandBtn)
-startBtn = pygame.image.load(debugStartBtn)
-shopBtn = pygame.image.load(debugShopBtn)
-readyBtn = pygame.image.load(debugReadyBtn)
+randBtn = pygame.image.load(buildRandBtn)
+startBtn = pygame.image.load(buildStartBtn)
+shopBtn = pygame.image.load(buildShopBtn)
+readyBtn = pygame.image.load(buildReadyBtn)
 
-sizeSel = pygame.image.load(debugSizeSelect)
-maxSel = pygame.image.load(debugMaxSelect)
-orderSel = pygame.image.load(debugOrderSelect)
-randSel = pygame.image.load(debugRandSelect)
-startSel = pygame.image.load(debugStartSelect)
-shopSel = pygame.image.load(debugShopSel)
+randSel = pygame.image.load(buildRandSelect)
+startSel = pygame.image.load(buildStartSelect)
+shopSel = pygame.image.load(buildShopSel)
 
 #--------------------------Simulation States-----------------------------
 menuOpen = False
@@ -145,8 +118,8 @@ canSort = False
 
 #------------------------------------text------------------------------------
 pygame.font.init()
-font = pygame.font.SysFont('freesansbold', 36)
-errorFont = pygame.font.SysFont('freesansbold', 24)
+font = pygame.font.SysFont('freesansbold', 24)
+errorFont = pygame.font.SysFont('freesansbold', 15)
 
 #----------------------------game variables------------------------------------
 timesSorted = 0
