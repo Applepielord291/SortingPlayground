@@ -95,9 +95,5 @@ error3 = Question("Identify the error:", errorsor3, ["Line 1", "Line 4", "Line 5
 error4 = Question("Change one line to make this ascending:", mergeSort, ["Line 11", "Line 5", "Line 25", "Line 4"], 1)
 error5 = Question("Change one line to make this descending:", errorsor5, ["Line 11", "Line 5", "Line 25", "Line 4"], 1)
 error6 = Question("Identify the error:", errorsor6, ["Line 20", "Line 24", "Line 25", "Line 23"], 2)
-error7 = Question("How does merge sort work:", mergeSort, ["Split main array once then sort left and right side. Merge both sides together and put lower value first.",
-                                                           "split subarrays until subarrays are one element: merge subarrays together and put the lowest value first.",
-                                                           "Generate two pivot element at the first element and order the rest of the array around it.",
-                                                           "Create two arrays and merge them together"], 1)
 
-errors = [error1, error2, error3, error4, error5, error6, error7]
+errors = [error1, error2, error3, error4, error5, error6]

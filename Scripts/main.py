@@ -7,7 +7,7 @@ from pygame.locals import *
 # Nigel Garcia
 # main.py
 # Main script, run this to run the program.
-# This is the title screen, the start of the program.
+# This is the title screen, the start of the program.7
 
 # it goes: main.py --> tutorial.py --> simulation.py
 # questions.py and constants.py are global variables/classes stored in there for convenience

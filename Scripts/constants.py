@@ -11,6 +11,7 @@ MENU_SCREEN = 1
 SHOP_SCREEN = 2
 ERROR_SCREEN = 3
 RESULT_SCREEN = 4
+MODIFY_SCREEN = 5
 
 currentState = CLICK_SCREEN
 prevState = CLICK_SCREEN
@@ -53,6 +54,12 @@ buildReadyBtn = 'Sprites/ReadyBtn.png'
 debugShopSel = 'Scripts/Sprites/ShopSel.png'
 buildShopSel = 'Sprites/ShopSel.png'
 
+debugModBtn = 'Scripts/Sprites/ModBtn.png'
+buildModBtn = 'Sprites/ModBtn.png'
+
+debugModSel = 'Scripts/Sprites/ModSelect.png'
+buildModSel = 'Sprites/ModSelect.png'
+
 debugArrowSel = 'Scripts/Sprites/ArrowSelect.png'
 buildArrowSel = 'Sprites/ArrowSelect.png'
 
@@ -90,28 +97,42 @@ randBtn = pygame.image.load(buildRandBtn)
 startBtn = pygame.image.load(buildStartBtn)
 shopBtn = pygame.image.load(buildShopBtn)
 readyBtn = pygame.image.load(buildReadyBtn)
+modBtn = pygame.image.load(buildModBtn)
 
 randSel = pygame.image.load(buildRandSelect)
 startSel = pygame.image.load(buildStartSelect)
 shopSel = pygame.image.load(buildShopSel)
+modSel = pygame.image.load(buildModSel)
 
 #--------------------------Simulation States-----------------------------
 menuOpen = False
 
 #--------------------------Menu button States----------------------------
 SHOP_SEL = 0
+MODIFY_SEL = 1
 curBtn = SHOP_SEL
+
+ORDER = 0
+MAXIMUM = 1
+MINIMUM = 2
+EDUCATION = 3
+
+curMod = ORDER
+
 AscOrDesc = True # True is ascending, False is descending
 RenderInput = False
 pickMaxVal = False
 pickMaxElem = False
 shopOpen = False
 
+modOpen = False
+
 #----------------------------List------------------------------------------
 
 length = 3
-MAX_LENGTH = 58
+MAX_LENGTH = 100000
 maxVal = 300
+minVal = 0
 arr = [0] * length
 
 canSort = False
@@ -149,7 +170,7 @@ shopItemPrice = [500,
                  50000,
                  100000,
                  1000000,
-                 1500000,
+                 5000000,
                  25]
 
 shopItemCurrency = ["SE",
@@ -179,3 +200,6 @@ quest = 0
 correct = False
 
 growthMult = 1
+
+eduMode = False
+
