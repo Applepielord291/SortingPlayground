@@ -21,7 +21,7 @@ from pygame.locals import *
 # however, since this programs gonna be on the web, it needs something like async IO to handle the high-performance stuff on the web
 # Thus the async and the awaits.
 
-# Other Scripts
+# Other Scripts 
 import constants as CONST
 import tutorial as TRANSITION
 

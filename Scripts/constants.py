@@ -80,46 +80,46 @@ buildClickSound = 'Music/ClickSound.ogg'
 
 #--------------------------ANIMATIONS-----------------------------
 titleScreenImgList = []
-for image in glob.glob(debugTitle):
+for image in glob.glob(buildTitle):
     titleScreenImgList.append(image)
 titleScreenImgList.sort()
 
 transitionImgList1 = []
-for image in glob.glob(debugTrans1):
+for image in glob.glob(buildTrans1):
     transitionImgList1.append(image)
 transitionImgList1.sort()
 
 transitionImgList2 = []
-for image in glob.glob(debugTrans2):
+for image in glob.glob(buildTrans2):
     transitionImgList2.append(image)
 transitionImgList2.sort()
 
 settingsImgList = []
-for image in glob.glob(debugSettings):
+for image in glob.glob(buildSettings):
     settingsImgList.append(image)
 settingsImgList.sort()
 
 #--------------------------Simulation Images-----------------------------
-dropDown = pygame.image.load(debugDropDown)
+dropDown = pygame.image.load(buildDropDown)
 
-shopArrowSel = pygame.image.load(debugArrowSel)
-shopTitle = pygame.image.load(debugShopTitle)
+shopArrowSel = pygame.image.load(buildArrowSel)
+shopTitle = pygame.image.load(buildShopTitle)
 
-randBtn = pygame.image.load(debugRandBtn)
-startBtn = pygame.image.load(debugStartBtn)
-shopBtn = pygame.image.load(debugShopBtn)
-readyBtn = pygame.image.load(debugReadyBtn)
-modBtn = pygame.image.load(debugModBtn)
+randBtn = pygame.image.load(buildRandBtn)
+startBtn = pygame.image.load(buildStartBtn)
+shopBtn = pygame.image.load(buildShopBtn)
+readyBtn = pygame.image.load(buildReadyBtn)
+modBtn = pygame.image.load(buildModBtn)
 
-randSel = pygame.image.load(debugRandSelect)
-startSel = pygame.image.load(debugStartSelect)
-shopSel = pygame.image.load(debugShopSel)
-modSel = pygame.image.load(debugModSel)
+randSel = pygame.image.load(buildRandSelect)
+startSel = pygame.image.load(buildStartSelect)
+shopSel = pygame.image.load(buildShopSel)
+modSel = pygame.image.load(buildModSel)
 
 #---------------------------MUSIC-------------------------------------------------
 mixer.init()
-mixer.music.load(debugSong)
-click = pygame.mixer.Sound(debugClickSound)
+mixer.music.load(buildSong)
+click = pygame.mixer.Sound(buildClickSound)
 
 mixer.music.set_volume(0.3)
 click.set_volume(0.05)

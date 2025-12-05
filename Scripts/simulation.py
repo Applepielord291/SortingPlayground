@@ -256,7 +256,8 @@ async def Inputs(screen):
 async def RenderBars(screen):
     if CONST.arr != None:
         pos = 100 # iterate x so that all the bars dont just render on top of each other
-        width = math.ceil(1000 / len(CONST.arr))
+        width = 1000 // len(CONST.arr)
+        if width == 0: width = 1
         increment = width
         for i in range(len(CONST.arr)):
             # draw.rect just draws a rectangle onto the screen, no image file required
