@@ -71,6 +71,5 @@ async def main():
     display = (1200, 800)
     screen = pygame.display.set_mode(display) # initializes the display window with whatever size
     await Update(screen)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    
+asyncio.run(main())

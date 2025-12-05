@@ -1,9 +1,9 @@
-**Algorithm picked: Merge Sorting Algorithm**
+**Algorithm picked: Merge Sorting Algorithm.**
     **Why?** --> It is the most consistent and fast algorithm, having a worst/average/best time complexity of O(nlogn), and is used
     as the standard in various industries (or so ive heard). Having a fundamental understanding of this algorithm means you understand an algorithm that actually has useful 
     applications (not like bubble sort).
 
-    ## Since my game is inspired by cookie clicker, Idle games like these need a fast way to generate currency (in this case, its Sorted elements (SE)), and merge sort is one of the quickest and the most consistent (out of the main ones)
+    ## Since my game is inspired by cookie clicker, Idle games like these need a fast way to generate currency (in this case, its Sorted elements (SE)), and merge sort is one of the quickest and the most consistent (out of the main ones), which makes it perfect for a game like this.
 
 **Demo videos and screenshots are on the deployed project link**
 ### **All code can be found in Scripts folder**
@@ -53,7 +53,7 @@
 
 
     To run it: Run the main.py file
-    
+
     If you want to make a build of it: Go into the terminal, and type in "pygbag Scripts"
 
 **Deployed Project link:**
