@@ -36,6 +36,7 @@
     Flow Charts:
         check FlowChartFolder
 **OPEN THE FLOWCHARTS IN A NEW TAB, THEY'RE MASSIVE**
+
 **EDIT: in the flowcharts you will see main.py, THAT IS app.py but main was its INITIAL name.**
         
 **Steps to run:**
