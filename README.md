@@ -44,16 +44,17 @@
 
 **If you want to run the project through the Scripts instead:**
 
-    Install the Scripts folder
+    Install the zip of the repo
 
-    create a virtual environment
+    create a virtual environment IN THE SCRIPTS FOLDER
 
     Install pygame
 
     Install pygbag
 
 
-    To run it: Run the app.py file
+
+    To run it: Open IDE in the Scripts folder as the root, Run the app.py file
 
     If you want to make a build of it: Go into the terminal, and type in "pygbag Scripts"
 
