@@ -6,6 +6,7 @@
     Since my game is inspired by cookie clicker, Idle games like these need a fast way to generate currency (in this case, its Sorted elements (SE)), and merge sort is one of the quickest and the most consistent (out of the main ones)
 
 **Demo videos and screenshots are on the deployed project link**
+**All code can be found in Scripts/**
 
 **Computational Thinking**
     Decomposition: Since almost everything is called in an update loop that as long as the program is up, seperate everything into smaller functions
@@ -32,10 +33,7 @@
         pygames drawing system. 
 
     Flow Chart:
-        main.py
-        tutorial.py
-        simulation.py
-        constants.py
+        check FlowChartFolder
         
 **Steps to run:**
     Go to my itch.io link
