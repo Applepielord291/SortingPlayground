@@ -41,6 +41,15 @@
     Go to my itch.io link
     Click "RUN GAME"
 
+**If you want to run the project through the Scripts instead:**
+    Install the Scripts folder
+    create a virtual environment
+    Install pygame
+    Install pygbag
+
+    To run it: Run the main.py file
+    If you want to make a build of it: Go into the terminal, and type in "pygbag Scripts"
+
 **Deployed Project link:**
     https://applepielord291.itch.io/idle-merge-sort
 

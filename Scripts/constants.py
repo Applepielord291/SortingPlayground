@@ -22,60 +22,42 @@ currentState = CLICK_SCREEN
 prevState = CLICK_SCREEN
 
 #--------------------------Paths-----------------------------
-debugTitle = 'Scripts/TitleScreen/*.jpg'
 buildTitle = 'TitleScreen/*.jpg'
 
-debugTrans1 = 'Scripts/Transition1/*.jpg'
 buildTrans1 = 'Transition1/*.jpg'
 
-debugTrans2 = 'Scripts/Transition2/*.jpg'
 buildTrans2 = 'Transition2/*.jpg'
 
-debugSettings = 'Scripts/SettingsScreen/*.jpg'
 buildSettings = 'SettingsScreen/*.jpg'
 
 # Sprites
-debugDropDown = 'Scripts/Sprites/DropDown.png'
 buildDropDown = 'Sprites/DropDown.png'
 
-debugRandBtn = 'Scripts/Sprites/RandomBtn.png'
 buildRandBtn = 'Sprites/RandomBtn.png'
 
-debugRandSelect = 'Scripts/Sprites/RandomSelect.png'
 buildRandSelect = 'Sprites/RandomSelect.png'
 
-debugStartBtn = 'Scripts/Sprites/StartBtn.png'
 buildStartBtn = 'Sprites/StartBtn.png'
 
-debugStartSelect = 'Scripts/Sprites/StartSelect.png'
 buildStartSelect = 'Sprites/StartSelect.png'
 
-debugShopBtn = 'Scripts/Sprites/ShopBtn.png'
 buildShopBtn = 'Sprites/ShopBtn.png'
 
-debugReadyBtn = 'Scripts/Sprites/ReadyBtn.png'
 buildReadyBtn = 'Sprites/ReadyBtn.png'
 
-debugShopSel = 'Scripts/Sprites/ShopSel.png'
 buildShopSel = 'Sprites/ShopSel.png'
 
-debugModBtn = 'Scripts/Sprites/ModBtn.png'
 buildModBtn = 'Sprites/ModBtn.png'
 
-debugModSel = 'Scripts/Sprites/ModSelect.png'
 buildModSel = 'Sprites/ModSelect.png'
 
-debugArrowSel = 'Scripts/Sprites/ArrowSelect.png'
 buildArrowSel = 'Sprites/ArrowSelect.png'
 
-debugShopTitle = 'Scripts/Sprites/ShopTitle.png'
 buildShopTitle = 'Sprites/ShopTitle.png'
 
 # music
-debugSong = 'Scripts/Music/IdleMergeBG.ogg'
 buildSong = 'Music/IdleMergeBG.ogg'
 
-debugClickSound = 'Scripts/Music/ClickSound.ogg'
 buildClickSound = 'Music/ClickSound.ogg'
 
 #--------------------------ANIMATIONS-----------------------------
