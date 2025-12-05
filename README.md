@@ -63,6 +63,8 @@
     https://github.com/Applepielord291/SortingPlayground
 
 **Testing and verification**
+### test video here: (5 minutes): https://youtu.be/rJjj3ZRxtQs?si=7k7QcQs5_AgusBQU
+### as for the images, theres 4, and posted on the deployed link.
 ### Testing and verification can be viewed here: https://applepielord291.itch.io/idle-merge-sort/devlog/1134689/the-first-and-only-update
 ### but for clarity, it will also be below.
 
