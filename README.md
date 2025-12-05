@@ -35,6 +35,7 @@
 
     ## Flow Chart:
         check FlowChartFolder
+        **OPEN THE IMAGE IN A NEW TAB, THEY'RE MASSIVE**
         
 **Steps to run:**
     Go to my itch.io link
