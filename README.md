@@ -36,6 +36,7 @@
     Flow Charts:
         check FlowChartFolder
 **OPEN THE FLOWCHARTS IN A NEW TAB, THEY'RE MASSIVE**
+**EDIT: in the flowcharts you will see main.py, THAT IS app.py but main was its INITIAL name.**
         
 **Steps to run:**
     Go to my itch.io link
@@ -52,7 +53,7 @@
     Install pygbag
 
 
-    To run it: Run the main.py file
+    To run it: Run the app.py file
 
     If you want to make a build of it: Go into the terminal, and type in "pygbag Scripts"
 
