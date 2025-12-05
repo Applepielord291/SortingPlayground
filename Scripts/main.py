@@ -2,12 +2,14 @@ import pygame
 import asyncio
 from pygame.locals import *
 
-# NO AI USED
+# NO AI USED, only documentation, and code examples in their documentation
+# Documentation used:
+#   https://www.pygame.org/docs/
 
 # Nigel Garcia
 # main.py
 # Main script, run this to run the program.
-# This is the title screen, the start of the program.7
+# This is the title screen, the start of the program.
 
 # it goes: main.py --> tutorial.py --> simulation.py
 # questions.py and constants.py are global variables/classes stored in there for convenience

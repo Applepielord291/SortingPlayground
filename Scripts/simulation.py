@@ -4,7 +4,9 @@ import random
 import math
 from pygame.locals import *
 
-# NO AI USED
+# NO AI USED, only documentation, and code examples in their documentation
+# Documentation used:
+#   https://www.pygame.org/docs/
 
 # Nigel Garcia
 # simulation.py
@@ -22,7 +24,6 @@ from pygame.locals import *
 
 # Other Scripts
 import constants as CONST
-import questions as QUEST
 
 # State manager
 # Too many bool values for a single state, decided to make it more readable and assign a set of bools to a single int
@@ -44,10 +45,10 @@ async def StateManager():
         CONST.currentState = CONST.MODIFY_SCREEN
 
     # user has a suprise error pop-up
-    elif CONST.errorUp: 
+    elif CONST.errorUp and not CONST.eduMode: 
         CONST.currentState = CONST.ERROR_SCREEN
 
-# Generates a list with a dynamic length and a constant max value
+# Generates a list with a dynamic length and max value
 async def GenerateList():
     arr = [0] * CONST.length
     for i in range(CONST.length):
@@ -78,20 +79,21 @@ async def BuyItem(selItem):
     # if its not buying extra list length then that means its an upgrade taht will cost SE
     # similar to buying things irl, you get thing and money gets subtracted
     # but it also gets more expensive, because game design.
-    if CONST.shopItems[selItem] != "Elements":
-        if CONST.sortedElements >= CONST.shopItemPrice[selItem]: # if you even have enough SE
-            CONST.shopItemCount[selItem] += 1
-            CONST.sortedElements -= CONST.shopItemPrice[selItem]
-            CONST.shopItemPrice[selItem] //= 0.90
+    item = CONST.shopItems[selItem]
+    if item.name != "Increase Elements":
+        if CONST.sortedElements >= item.upgradePrice: # if you even have enough SE
+            item.count += 1
+            CONST.sortedElements -= item.upgradePrice
+            item.upgradePrice //= 0.85
     
     # if it is buying extra list length then its an upgrade that will cost TS
     # TS is less of a currency and more of a milestone in this game, so you cant lose TS
     # similar to rewards, you show of your achievement, you get extra reward, and aim for greater!
     else:
-        if CONST.timesSorted >= CONST.shopItemPrice[selItem] and CONST.length < CONST.MAX_LENGTH: # if you even have enough TS and it wont go past the max
-            CONST.shopItemCount[selItem] += 1
+        if CONST.timesSorted >= item.upgradePrice and CONST.length < CONST.MAX_LENGTH: # if you even have enough TS and it wont go past the max
+            item.count += 1
             CONST.length += 1
-            CONST.shopItemPrice[selItem] += 30
+            item.upgradePrice += 20
 
 # Result after answering an error question
 # if its right, growth multiplier (the rate at which your upgrades produce SE) increases!
@@ -108,7 +110,7 @@ async def ErrorResult(selVal):
     CONST.errorUp = False # so that the user isnt stuck on the error window
 
 # deals with user inputs, called in the update loop
-async def Inputs(screen): 
+async def Inputs(screen):
     # pygame.event is just a list of all events
     # events are stuff like keyboard inputs, closing windows, mouse inputs, ...
     # In this specific case, we need to know if the quit event is true so that we know when to quit
@@ -129,6 +131,7 @@ async def Inputs(screen):
     if CONST.currentState == CONST.CLICK_SCREEN: # is the user in the base screen?
         # Generate
         if keystate[pygame.K_k] and CONST.canSort: 
+            pygame.mixer.Sound.play(CONST.click)
             CONST.timesSorted += 1
             CONST.sortedElements += CONST.length
             arr = await sort(CONST.arr, screen)
@@ -136,6 +139,7 @@ async def Inputs(screen):
             CONST.canSort = False
         # Sort
         elif keystate[K_s] and not CONST.canSort: 
+            pygame.mixer.Sound.play(CONST.click)
             await GenerateList()
             CONST.canSort = True
 
@@ -144,7 +148,7 @@ async def Inputs(screen):
             CONST.menuOpen = True
     
     # Menu Navigation with arrow keys
-    if CONST.currentState == CONST.MENU_SCREEN: 
+    elif CONST.currentState == CONST.MENU_SCREEN: 
         # Close the dropdown menu (down arrow)
         if keystate[pygame.K_DOWN] and CONST.menuOpen:
             CONST.menuOpen = False
@@ -162,10 +166,10 @@ async def Inputs(screen):
             await MenuOperations(CONST.curBtn)
     
     # Shop navigation (same keybinds as dropdown menu)
-    if CONST.currentState == CONST.SHOP_SCREEN:
-        if keystate[pygame.K_DOWN] and CONST.curShopSel < CONST.ELEMENT:
+    elif CONST.currentState == CONST.SHOP_SCREEN:
+        if keystate[pygame.K_DOWN] and CONST.curShopSel < CONST.SUPERCOMPUTER:
             CONST.curShopSel += 1
-        elif keystate[pygame.K_UP] and CONST.curShopSel > CONST.SCRIPT:
+        elif keystate[pygame.K_UP] and CONST.curShopSel > CONST.ELEMENT:
             CONST.curShopSel -= 1
         
         # Buy an upgrade
@@ -175,17 +179,22 @@ async def Inputs(screen):
         elif keystate[pygame.K_ESCAPE]:
             CONST.shopOpen = False
     
-    if CONST.currentState == CONST.MODIFY_SCREEN:
+    # Array modify screen
+    elif CONST.currentState == CONST.MODIFY_SCREEN:
+        # Navigate the menu
         if keystate[pygame.K_DOWN] and CONST.curMod < CONST.EDUCATION:
             CONST.curMod += 1
         elif keystate[pygame.K_UP] and CONST.curMod > CONST.ORDER:
             CONST.curMod -= 1
 
+        # order Selection
         if CONST.curMod == CONST.ORDER:
             if keystate[pygame.K_RIGHT]:
                 CONST.AscOrDesc = False
             elif keystate[pygame.K_LEFT]: 
                 CONST.AscOrDesc = True
+        
+        # Max value seleciton
         elif CONST.curMod == CONST.MAXIMUM:
             if keystate[pygame.K_RIGHT] and CONST.maxVal < 400:
                 if keystate[pygame.K_LSHIFT]:
@@ -197,6 +206,8 @@ async def Inputs(screen):
                     CONST.maxVal -= 10
                 elif not keystate[pygame.K_LSHIFT]:
                     CONST.maxVal -= 1
+        
+        # Minimum value selection
         elif CONST.curMod == CONST.MINIMUM:
             if keystate[pygame.K_RIGHT] and CONST.minVal < CONST.maxVal-1:
                 if keystate[pygame.K_LSHIFT]:
@@ -208,22 +219,25 @@ async def Inputs(screen):
                     CONST.minVal -= 10
                 elif not keystate[pygame.K_LSHIFT]:
                     CONST.minVal -= 1
+
         elif CONST.curMod == CONST.EDUCATION:
             if keystate[pygame.K_RIGHT]:
                 CONST.eduMode = False
             elif keystate[pygame.K_LEFT]: 
                 CONST.eduMode = True
         
+        # Just so that the max/min value are in their bounds
         if CONST.maxVal < CONST.minVal+1: CONST.maxVal = CONST.minVal+1
         if CONST.minVal < 0: CONST.minVal = 0
         if CONST.minVal > CONST.maxVal-1: CONST.minVal = CONST.maxVal-1
         if CONST.maxVal > 400: CONST.maxVal = 400
 
+        # Exit the array modify screen
         if keystate[pygame.K_ESCAPE]:
             CONST.modOpen = False
 
     # Error screen navigation (same as all the other menus)
-    if CONST.currentState == CONST.ERROR_SCREEN:
+    elif CONST.currentState == CONST.ERROR_SCREEN:
         # Each question has 4 answers, so i just hard coded it
         # but if i wanted it to be dynamic then i would add another paremeter in the questions class
         # to store the number of answers and use that as the condition below:
@@ -240,9 +254,8 @@ async def Inputs(screen):
 # Render Sort algorithm made visual
 # renders all the values as bars and draws them onto the screen
 async def RenderBars(screen):
-    if CONST.arr != None and not CONST.eduMode:
+    if CONST.arr != None:
         pos = 100 # iterate x so that all the bars dont just render on top of each other
-        totalBarLen = pos * len(CONST.arr) # Dynamically resize the bars depending on list length
         width = math.ceil(1000 / len(CONST.arr))
         increment = width
         for i in range(len(CONST.arr)):
@@ -255,7 +268,7 @@ async def RenderBars(screen):
         
 # deals with image renders in the clicking screen (base state)
 # so the main animation, and click buttons are here
-async def RenderImages(screen, currentFrame, currentAnim): 
+async def RenderClickImages(screen, currentFrame, currentAnim): 
     titleScreenImg = pygame.image.load(currentAnim[currentFrame]) # retrieve the image from the animation sheet
     screen.blit(titleScreenImg, (0,0)) # blit just means to render the current image at position (x, y) (in this case, its (0, 0))
 
@@ -265,7 +278,7 @@ async def RenderImages(screen, currentFrame, currentAnim):
     if not CONST.canSort:
         screen.blit(CONST.randBtn, (365, 550))
         screen.blit(CONST.startSel, (610, 550))
-    elif CONST.canSort:
+    else:
         screen.blit(CONST.randSel, (365, 550))
         screen.blit(CONST.startBtn, (610, 550))
 
@@ -299,7 +312,7 @@ async def SimulationInputs():
 # but yeah, the fucntion displays the following
 # current list size, the max list list, the growth rate, the result of the previous answer
 # user TE, user SE
-async def SideBarRender(screen):
+async def StatsRender(screen):
     displayTxt = "List Size: {0} || Max Size: {1} || Growth Rate: {2} || Previous Answer: {3}".format(CONST.length, CONST.MAX_LENGTH, CONST.growthMult, CONST.correct)
     displayTxt2 = "Times Sorted (TS): {0} || Sorted Elements (SE): {1}".format(CONST.timesSorted, CONST.sortedElements)
 
@@ -335,7 +348,8 @@ async def ShopRender(screen):
         # the base is 200 to make sure that the start of the text renders are actually in the shop rectangle background
         posY = 200 
         for i in range(len(CONST.shopItems)):
-            displayTxt = "{0} {1}: {2} {3}".format(CONST.shopItemCount[i], CONST.shopItems[i], CONST.shopItemPrice[i], CONST.shopItemCurrency[i])
+            selItem = CONST.shopItems[i]
+            displayTxt = "{0} {1}: {2} {3}".format(selItem.count, selItem.name, selItem.upgradePrice, selItem.currencyType)
             # Takes the font stored in constants.py (a system font with size 24) and renders it
             # The first param is the string to be displayed
             # The second param is just whether anti-aliasing is used or not
@@ -360,9 +374,10 @@ async def ShopRender(screen):
 # Passive income from upgrades, since thats how the upgrades work (so it runs in the update loop)
 # the formula is (count of upgrade i) * (position in shop list+1) + (growth multiplier)
 async def MoneyGen():
-    for i in range(len(CONST.shopItemCount)-1):
-        if CONST.shopItemCount[i] != 0:
-            CONST.sortedElements += CONST.shopItemCount[i] * ((i+1)+CONST.growthMult)
+    for i in range(len(CONST.shopItems)-1):
+        selItem = CONST.shopItems[i]
+        if i != 0:
+            CONST.sortedElements += selItem.count * ((i+1)+CONST.growthMult)
 
 # This is the error popup change
 # pretty much, I was inspired by the cookie clicker golden cookies
@@ -374,7 +389,7 @@ async def ErrorChance():
     if rand == 1 and CONST.currentState != CONST.ERROR_SCREEN:
         CONST.prevState = CONST.currentState
         CONST.errorUp = True
-        randVal = int(random.random() * len(QUEST.errors))
+        randVal = int(random.random() * len(CONST.errors))
         return randVal # so that if the return actually isnt null then the 1/5000 occured so render the error
 
 # Error popup render when the 1 in 5000 hits
@@ -385,7 +400,7 @@ async def ErrorRender(screen, val):
     # the third parameter is the position and scale of the rects in (xPos, yPos, xScale, yScale)
     pygame.draw.rect(screen, pygame.Color(0, 0, 0, 200), (1200 // 10, 75, 1200 // 1.25, 700))
     posY = 100 # (for iterating all the question class properties posY, so they dont all render on top of each other)
-    CONST.selError = QUEST.errors[val] # get the selected class for easier access cause were gonna mess with this alot
+    CONST.selError = CONST.errors[val] # get the selected class for easier access cause were gonna mess with this alot
     title = "ERROR"
     # Takes the font stored in constants.py (a system font with size 24) and renders it
     # The first param is the string to be displayed
@@ -444,9 +459,11 @@ async def ErrorRender(screen, val):
             screen.blit(CONST.shopArrowSel, (850, posY-15)) #-15 arrow y offset
         posY += 20
 
+# Display the menu for the Array modify screen
+# same idea as all the other menus
 async def ModifyMenuRender(screen):
     if CONST.currentState == CONST.MODIFY_SCREEN:
-        pygame.draw.rect(screen, pygame.Color(0, 0, 0, 200), (1200 // 5, 65, 1200 // 1.5, 700))
+        pygame.draw.rect(screen, pygame.Color(0, 0, 0, 200), (1200 // 9, 65, 1200 // 1.25, 700))
 
         title = "Modify Merge Sort!"
         order = "Ascending?: {0}".format(CONST.AscOrDesc)
@@ -456,7 +473,6 @@ async def ModifyMenuRender(screen):
         warning = "WARNING: its going to take a long time to sort the array if you're in late-game"
         tooltip = "Press LEFT/RIGHT arrows to cycle through values. Hold SHIFT to cycle faster."
         exit = "Press ESCAPE to exit"
-        #barColor = 
 
         titleTxt = CONST.font.render(title, True, (0, 255, 0), None)
         titleRect = titleTxt.get_rect()
@@ -519,8 +535,8 @@ async def Update(screen):
             # If youve ever used drawing software, I like to think of it as image layers.
             await StateManager()
             await Inputs(screen)
-            await RenderImages(screen, currentFrame, CONST.settingsImgList)
-            await SideBarRender(screen)
+            await RenderClickImages(screen, currentFrame, CONST.settingsImgList)
+            await StatsRender(screen)
             await RenderBars(screen)
             await SimulationRender(screen)
             await ShopRender(screen)
@@ -530,7 +546,7 @@ async def Update(screen):
             await MoneyGen()
             if not CONST.errorUp:
                 CONST.quest = await ErrorChance()
-            elif CONST.errorUp:
+            else:
                 await ErrorRender(screen, CONST.quest)
 
             pygame.display.flip() # Updates the entire screen to account for any new renders needed to be displayed
@@ -543,28 +559,39 @@ async def Update(screen):
 async def Start(screen):
     await Update(screen)
 
-async def RenderBarSlow(list, startPoint, screen, displayTxt):
+# Same as RenderBars but takes is slow and step by step
+# Renders the bars, the code involved and the control tooltips
+async def RenderBarSlow(list, startPoint, screen, displayTxt, codeSnip):
     if list != None:
         display = CONST.font.render(displayTxt, True, (0, 255, 0), None)
         displayRect = display.get_rect()
-        displayRect.midleft = (startPoint + 50, 600)
+        displayRect.midleft = (startPoint + 50, 50)
         screen.blit(display, displayRect)
         
-        display = CONST.font.render("Press ENTER to proceed", True, (0, 255, 0), None)
+        display = CONST.font.render("Press and hold ENTER to slow down", True, (0, 255, 0), None)
         displayRect = display.get_rect()
-        displayRect.center = (1200 // 2, 700)
+        displayRect.center = (1200 // 4.5, 600)
         screen.blit(display, displayRect)
 
-        display = CONST.font.render("Press ESCAPE to leave early", True, (0, 255, 0), None)
+        display = CONST.font.render("Press and hold ESCAPE to leave early", True, (0, 255, 0), None)
         displayRect = display.get_rect()
-        displayRect.center = (1200 // 2, 750)
+        displayRect.center = (1200 // 4.5, 675)
         screen.blit(display, displayRect)
 
-        pygame.display.flip()
+        yPos = 500
+        for i in range(len(codeSnip)):
+            txt = CONST.font.render(codeSnip[i], True, (0, 255, 0), None)
+            txtRect = txt.get_rect()
+            txtRect.midleft = (1200 // 2, yPos)
+            screen.blit(txt, txtRect)
+            yPos += 30
 
         pos = startPoint # iterate x so that all the bars dont just render on top of each other
-        width = math.ceil(500 / len(CONST.arr))
-        increment = width
+        width = math.ceil(500 / len(CONST.arr)) # bar width
+        increment = width # distance between bars
+        curSpd = 250
+        fast = 250 # delay (in ms) between each iteration
+        slow = 1500
         for i in range(len(list)):
             # draw.rect just draws a rectangle onto the screen, no image file required
             # the first parameter is what display the rect should be drawn to
@@ -572,22 +599,26 @@ async def RenderBarSlow(list, startPoint, screen, displayTxt):
             # the third parameter is the position and scale of the rects in (xPos, yPos, xScale, yScale)
             pygame.draw.rect(screen, pygame.Color(255, 255, 255, 255), (pos, 75, width, list[i]))
             pos += increment
-            pygame.display.flip()
-            pygame.time.wait(250)
-        
-        c = False
-        while not c:
             keystate = pygame.key.get_pressed() 
-            pygame.time.wait(50)
-            if keystate[pygame.K_RETURN] and not c:
-                c = True
-            elif keystate[pygame.K_ESCAPE] and not c:
-                print("LEAV")
+            # Exit the tutorial showcase
+            if keystate[pygame.K_ESCAPE]:
                 CONST.eduMode = False
-                c = True
                 break
+            # Toggle slowdown/speedup tutorial simulation
+            elif keystate[pygame.K_RETURN]:
+                if curSpd == fast:
+                    curSpd = slow
+                else:
+                    curSpd = fast
+            # The reason why i have a display refresh here is because I want to show a visual step by step process
+            # So i need to show each iteration and render it, thus the .flip() refresh
+            pygame.display.flip()
+            pygame.time.wait(curSpd)
+            await asyncio.sleep(0) # Required for async stuff or it will just crash
+            # This essentially just makes it so that the program can keep on processing pygame events
+            # In this specific case, not having it in this loops makes the inputs not respond (excape key, return key)
+            # thus the .pump()
             pygame.event.pump()
-        
 
 # Merge sort
 # its not too different from the merge sort in classes
@@ -596,6 +627,7 @@ async def merge(left, right, screen):
     finalList = []
     i, j, = 0, 0
     while i < len(left) and j < len(right):
+        # if is ascending
         if CONST.AscOrDesc:
             if left[i] <= right[j]:
                 finalList.append(left[i])
@@ -603,6 +635,7 @@ async def merge(left, right, screen):
             else:
                 finalList.append(right[j])
                 j += 1
+        # if descending
         else:
             if left[i] >= right[j]:
                 finalList.append(left[i])
@@ -610,21 +643,24 @@ async def merge(left, right, screen):
             else:
                 finalList.append(right[j])
                 j += 1
+        # if education mode is on, render each step
         if CONST.eduMode:
             screen.fill((0, 0, 0))
-            await RenderBarSlow(finalList, 25, screen, "add the smallest value to the final")
+            await RenderBarSlow(finalList, 25, screen, "add the smallest value to the final", CONST.displayMerge2)
     while i < len(left):
         finalList.append(left[i])
         i += 1
+        # if education mode is on, render each step
         if CONST.eduMode:
             screen.fill((0, 0, 0))
-            await RenderBarSlow(finalList, 25, screen, "add remaining elements from left side")
+            await RenderBarSlow(finalList, 25, screen, "add remaining elements from left side", CONST.displayMerge3)
     while j < len(right):
         finalList.append(right[j])
         j += 1
+        # if education mode is on, render each step
         if CONST.eduMode:
             screen.fill((0, 0, 0))
-            await RenderBarSlow(finalList, 25, screen, "add remaining elements from right side")
+            await RenderBarSlow(finalList, 25, screen, "add remaining elements from right side", CONST.displayMerge4)
     return finalList
 async def sort(list, screen):
     length = len(list)
@@ -633,10 +669,14 @@ async def sort(list, screen):
     else:
         left = list[:length//2]
         right = list[length//2:]
+        # if education mode is on, render each step
         if CONST.eduMode:
             screen.fill((0, 0, 0))
-            await RenderBarSlow(left, 25, screen, "Split Array: Left")
+            await RenderBarSlow(left, 25, screen, "Split Array: Left", CONST.displayMerge1)
+        # The reason why these are seperated into two if conditions is so that the user can actually exit
+        # what i mean is, if these were in the same statement then the user would have to wait for left AND right side to finish
+        # rendering before being able to exit
         if CONST.eduMode:
-            await RenderBarSlow(right, 600, screen, "Split Array: Right")
+            await RenderBarSlow(right, 600, screen, "Split Array: Right", CONST.displayMerge1)
     return await merge(await sort(left, screen), await sort(right, screen), screen)
     
